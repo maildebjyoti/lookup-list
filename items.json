@@ -1,5 +1,6 @@
 {
 	"groceries": [
+		"Type item",
 		"Masoor dal",
 		"Rice",
 		"Pickle",
@@ -7,6 +8,7 @@
 		"Ghee"
 	],
 	"supermarket": [
+		"Type item",
 		"Frozen Meat",
 		"Ice-Cream",
 		"Whiskey",
