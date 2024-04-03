@@ -1,0 +1,23 @@
+{
+    "FY23/24-Corp-R10": {
+        "RGBInitial": "15-Mar-2024",
+        "RGBFinal": "26-Mar-2024",
+        "Window": "5-Apr-2024 to 9-Apr-2024",
+        "RegCutoff": "12-Mar-2024",
+        "RelSignoff": "26-Mar-2024"
+    },
+    "FY23/24-SpringRel":{
+        "RGBInitial": "16-Apr-2024",
+        "RGBFinal": "26-Apr-2024",
+        "Window": "7-May-2024 & 14-May-2024",
+        "RegCutoff": "19-Dec-2024",
+        "RelSignoff": "6-May-2024"
+    },
+    "FY23/24-Corp-R12": {
+        "RGBInitial": "",
+        "RGBFinal": "",
+        "Window": "17-Jun-2024 to 20-Jun-2024",
+        "RegCutoff": "27-May-2024",
+        "RelSignoff": ""
+    }
+}
