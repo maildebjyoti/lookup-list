@@ -26,5 +26,33 @@
         "Window": "17-Jun-2024 to 20-Jun-2024",
         "RegCutoff": "27-May-2024",
         "RelSignoff": ""
-    }
+    },
+    "FY24/25-Corp-R1": {
+        "RGBInitial": "30-May-2024",
+        "RGBFinal": "04-Jun-2024",
+        "Window": "17-Jun-2024 to 20-Jun-2024",
+        "RegCutoff": "27-May-2024",
+        "RelSignoff": ""
+    },
+   "FY24/25-Corp-R2": {
+        "RGBInitial": "30-May-2024",
+        "RGBFinal": "04-Jun-2024",
+        "Window": "17-Jun-2024 to 20-Jun-2024",
+        "RegCutoff": "27-May-2024",
+        "RelSignoff": ""
+    },
+    "FY24/25-SummerRel": {
+        "RGBInitial": "30-May-2024",
+        "RGBFinal": "04-Jun-2024",
+        "Window": "17-Jun-2024 to 20-Jun-2024",
+        "RegCutoff": "27-May-2024",
+        "RelSignoff": ""
+    },
+    "FY24/25-Corp-R4": {
+        "RGBInitial": "30-May-2024",
+        "RGBFinal": "04-Jun-2024",
+        "Window": "17-Jun-2024 to 20-Jun-2024",
+        "RegCutoff": "27-May-2024",
+        "RelSignoff": ""
+    },
 }
