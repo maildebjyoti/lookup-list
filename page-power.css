@@ -1,7 +1,10 @@
+
+//Info Box
 .confluence-information-macro.confluence-information-macro-information.conf-macro.output-block {
     background: antiquewhite;
 }
 
-.aui .jira-tablesorter-header {
+//Table header
+.aui .jira-tablesorter-header, .aui .jira-macro-table-underline-pdfexport {
     background: antiquewhite !important;
 }
