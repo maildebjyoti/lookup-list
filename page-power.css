@@ -1,3 +1,7 @@
 .confluence-information-macro.confluence-information-macro-information.conf-macro.output-block {
     background: antiquewhite;
 }
+
+.aui .jira-tablesorter-header {
+    background: antiquewhite !important;
+}
