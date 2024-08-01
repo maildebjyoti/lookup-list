@@ -1,10 +1,13 @@
 
-//Info Box
+/* Info Box */
 .confluence-information-macro.confluence-information-macro-information.conf-macro.output-block {
     background: antiquewhite;
 }
 
-//Table header
-.aui .jira-tablesorter-header, .aui .jira-macro-table-underline-pdfexport {
+/* Table header */
+/* .aui .jira-tablesorter-header {
     background: antiquewhite !important;
+} */
+.aui tbody tr:nth-child(2) {
+    background: aqua !important;
 }
