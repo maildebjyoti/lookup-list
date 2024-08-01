@@ -1,0 +1,5 @@
+function pagePower(){
+	console.log('Test 123');
+}
+
+pagePower();
