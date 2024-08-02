@@ -1,7 +1,7 @@
 
 /* Info Box */
 .confluence-information-macro.confluence-information-macro-information.conf-macro.output-block {
-    background: antiquewhite;
+    background: #fce8e8;
 }
 
 /* Table header */
@@ -9,5 +9,5 @@
     background: antiquewhite !important;
 } */
 .aui tbody tr:nth-child(2) {
-    background: aqua !important;
+    background: #f7e299 !important;
 }
