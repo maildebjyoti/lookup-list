@@ -19,6 +19,8 @@ function pagePower(){
 	console.log('Page-power: Test 123');
 	let test = document.querySelectorAll('#main-content > div.confluence-information-macro.confluence-information-macro-information.conf-macro.output-block')[0].textContent;
 	console.log(test);
+
+	highlightSystems();
 }
 
 pagePower();
