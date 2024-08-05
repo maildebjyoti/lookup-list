@@ -16,9 +16,27 @@ $.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-powe
 
 
 function pagePower(){
-	console.log('Hello: Test 123');
+	console.log('Page-power: Test 123');
 	let test = document.querySelectorAll('#main-content > div.confluence-information-macro.confluence-information-macro-information.conf-macro.output-block')[0].textContent;
 	console.log(test);
 }
 
 pagePower();
+
+
+function highlightSystems(){
+	$('.aui tbody tr:nth-child(2)').each((i, obj)=>{ 
+		console.log(i, obj);
+
+		let index =0, indexSystems = -1;
+		for ( let i of a.children ) {
+			let textKey = (i.textContent).trim().toUpperCase();
+			
+			if(textKey == 'SYSTEM LABELS') {
+				indexSystems = index;
+				console.log('Page-power: >>', i);
+			}
+			index++;
+		}
+	});
+}
