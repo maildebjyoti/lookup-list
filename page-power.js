@@ -20,7 +20,9 @@ function pagePower(){
 	let test = document.querySelectorAll('#main-content > div.confluence-information-macro.confluence-information-macro-information.conf-macro.output-block')[0].textContent;
 	console.log(test);
 
-	highlightSystems();
+	setTimeout(() => {
+		highlightSystems();
+	}, 5000); 
 }
 
 pagePower();
