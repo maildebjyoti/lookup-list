@@ -11,3 +11,10 @@
 .aui tbody tr:nth-child(2) {
     background: #f7e299 !important;
 }
+
+.aui tbody tr:nth-child(2) > th.jira-macro-table-underline-pdfexport {
+    color: #000;
+}
+.aui tbody tr:nth-child(2) > th.jira-macro-table-underline-pdfexport:hover {
+    background: #fadf7e !important;
+}
