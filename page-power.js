@@ -1,12 +1,12 @@
 console.log('Page-power:v1');
 /*
-$.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.js').then(js => {
+$.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.js' + '?t=' + (new Date()).toISOString()).then(js => {
     let scriptFunction = new Function(js);
     scriptFunction();
     console.log('hello hello -- page-power:js');
 });
 
-$.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.css').then(css => {
+$.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.css' + '?t=' + (new Date()).toISOString()).then(css => {
 	let style = document.createElement('style');
 	style.innerHTML = css;
 	document.head.appendChild(style);
