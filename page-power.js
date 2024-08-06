@@ -29,11 +29,11 @@ pagePower();
 
 
 function highlightSystems(){
-	$('.aui tbody tr:nth-child(2)').each((i, obj)=>{ 
-		console.log(i, obj);
+	$('.aui tbody tr:nth-child(2)').each((idx, obj)=>{ 
+		console.log(idx, obj);
 
 		let index =0, indexSystems = -1;
-		for ( let i of a.children ) {
+		for ( let i of obj.children ) {
 			let textKey = (i.textContent).trim().toUpperCase();
 			
 			if(textKey == 'SYSTEM LABELS') {
