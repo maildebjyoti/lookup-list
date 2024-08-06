@@ -22,7 +22,7 @@ function pagePower(){
 
 	setTimeout(() => {
 		highlightSystems();
-	}, 5000); 
+	}, 10000); 
 }
 
 pagePower();
