@@ -32,13 +32,27 @@ function highlightSystems(){
 	$('.aui tbody tr:nth-child(2)').each((idx, obj)=>{ 
 		console.log(idx, obj);
 
-		let index =0, indexSystems = -1;
+		let index = 1, indexSystems = -1;
 		for ( let i of obj.children ) {
 			let textKey = (i.textContent).trim().toUpperCase();
 			
 			if(textKey == 'SYSTEM LABELS') {
 				indexSystems = index;
-				console.log('Page-power: >>', i);
+				console.log('Page-power: >A>', i, indexSystems);
+
+				let rows = obj.parentNode.children;
+				console.log('Page-power: >B>',);
+				for(let row of rows){
+					console.log( 'Page-power: >C>', row.querySelector('td:nth-child(11)') );
+					let sys = row.querySelector('td:nth-child(11)');
+					sys = sys.textContent.replaceAll('\n', '').replaceAll(' ','');
+					sys = sys.split(',');
+					let tempHtml = sys.map((system)=>{
+						return `<span class="sys-pill">${system}</span>`;
+					});
+					tempHtml = tempHtml.join('');
+					console.log( 'Page-power: >D>', tempHtml);
+				}
 			}
 			index++;
 		}
