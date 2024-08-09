@@ -14,6 +14,7 @@ $.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-powe
 });
 */
 
+pagePower();
 
 function pagePower(){
 	console.log('Page-power: init function');
@@ -25,12 +26,9 @@ function pagePower(){
 	}, 10000); 
 }
 
-pagePower();
-
-
 function highlightSystems(){
 	$('.aui tbody tr:nth-child(2)').each((idx, obj)=>{ 
-		console.log(idx, obj);
+		//console.log(idx, obj);
 
 		let index = 1, indexSystems = -1;
 		for ( let i of obj.children ) {
@@ -38,12 +36,12 @@ function highlightSystems(){
 			
 			if(textKey == 'SYSTEM LABELS') {
 				indexSystems = index;
-				console.log('Page-power: >A>', i, indexSystems);
+				//console.log('Page-power: >A>', i, indexSystems);
 
 				let rows = obj.parentNode.children;
-				console.log('Page-power: >B>', rows);
+				//console.log('Page-power: >B>', rows);
 				for(let row of rows){
-					console.log( 'Page-power: >C>', row.querySelector('td:nth-child(11)') );
+					//console.log( 'Page-power: >C>', row.querySelector('td:nth-child(11)') );
 					let sys = row.querySelector('td:nth-child(11)');
 					if(sys){
 						sys = sys.textContent.replaceAll('\n', '').replaceAll(' ','');
@@ -52,7 +50,8 @@ function highlightSystems(){
 							return `<span class="sys-pill">${system}</span>`;
 						});
 						tempHtml = tempHtml.join('');
-						console.log( 'Page-power: >D>', tempHtml);
+						//console.log( 'Page-power: >D>', tempHtml);
+						row.querySelector('td:nth-child(11)').innerHTML = tempHtml;
 					}
 				}
 			}
