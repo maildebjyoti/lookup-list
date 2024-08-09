@@ -16,7 +16,7 @@ $.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-powe
 
 
 function pagePower(){
-	console.log('Page-power: Test 123');
+	console.log('Page-power: init function');
 	let test = document.querySelectorAll('#main-content > div.confluence-information-macro.confluence-information-macro-information.conf-macro.output-block')[0].textContent;
 	console.log(test);
 
