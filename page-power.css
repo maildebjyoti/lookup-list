@@ -14,3 +14,18 @@
 .aui tbody tr:nth-child(2) > th.jira-macro-table-underline-pdfexport:hover {
     background: #fadf7e !important;
 }
+
+span.sys-pill {
+	display: inline-flex;
+	background-color: aqua;
+	margin: 2px;
+	padding: 2px 5px;
+	cursor: pointer;
+	border-radius: 5px;
+	font-size: 12px;
+	font-weight: 500;
+}
+span.sys-pill:hover {
+	background-color: gold;
+	/* font-weight: 800; */
+}
