@@ -50,7 +50,7 @@ function highlightSystems(){
 							return `<span class="sys-pill">${system}</span>`;
 						});
 						tempHtml = tempHtml.join('');
-						//console.log( 'Page-power: >D>', tempHtml);
+						console.log( 'Page-power: >D>', tempHtml);
 						row.querySelector('td:nth-child(11)').innerHTML = tempHtml;
 					}
 				}
@@ -58,4 +58,16 @@ function highlightSystems(){
 			index++;
 		}
 	});
+	$('span.sys-pill').on('click', sysPillHandler);
+}
+
+function sysPillHandler(e){
+	$('.rowNormal.active-row, .rowAlternate.active-row').removeClass('active-row');
+	$('.sys-pill.active').removeClass('active');
+	$(e.target).addClass('active');
+	$(e.target.parentNode.parentNode).addClass('active-row');
+	
+	let sys = e.target.textContent;
+	console.log('-Power- Clicked:', sys);
+	console.log('Page-power -- System Info:', systemInfo.syscode[sys]);
 }

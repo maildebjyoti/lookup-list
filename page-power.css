@@ -29,3 +29,13 @@ span.sys-pill:hover {
 	background-color: gold;
 	/* font-weight: 800; */
 }
+span.sys-pill.error {
+    background: deeppink;
+}
+span.sys-pill.active {
+    background: darkorange;
+}
+
+.rowNormal.active-row, .rowAlternate.active-row {
+    background-color: beige;
+}
