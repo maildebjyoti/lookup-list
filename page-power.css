@@ -1,41 +1,46 @@
 
 /* Info Box */
 .confluence-information-macro.confluence-information-macro-information.conf-macro.output-block {
-    background: #fce8e8;
+    background: #F5F5F5;
 }
 
 /* Table header */
 .aui tbody tr:nth-child(2) {
-    background: #f7e299 !important;
+    background: #121212 !important;
 }
 .aui tbody tr:nth-child(2) > th.jira-macro-table-underline-pdfexport {
-    color: #000;
+    color: #F5F5F5;
 }
 .aui tbody tr:nth-child(2) > th.jira-macro-table-underline-pdfexport:hover {
-    background: #fadf7e !important;
+    background: #64CCC5 !important;
 }
 
 span.sys-pill {
 	display: inline-flex;
-	background-color: aqua;
+	background-color: #DAFFFB;
+	color: #04364A;
 	margin: 2px;
 	padding: 2px 5px;
 	cursor: pointer;
 	border-radius: 5px;
 	font-size: 12px;
 	font-weight: 500;
+	border: 1px solid #04364A;
 }
 span.sys-pill:hover {
-	background-color: gold;
+	background-color: #FFCF96;
+	color: #04364A;
 	/* font-weight: 800; */
 }
 span.sys-pill.error {
-    background: deeppink;
+    background: #C80036;
+    color: #FFE7E7;
 }
 span.sys-pill.active {
-    background: darkorange;
+    background: #0C1844;
+    color: #FFF5E1;
 }
 
 .rowNormal.active-row, .rowAlternate.active-row {
-    background-color: beige;
+    background-color: #fffad1;
 }
