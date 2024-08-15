@@ -46,11 +46,13 @@ function highlightSystems(){
 					if(sys){
 						sys = sys.textContent.replaceAll('\n', '').replaceAll(' ','');
 						sys = sys.split(',');
-						let tempHtml = sys.map((system)=>{
-							return `<span class="sys-pill">${system}</span>`;
+						let tempHtml = sys.map((system) => {
+							return systemInfo.syscode.hasOwnProperty( system.trim().toUpperCase() )
+								? `<span class="sys-pill">${system}</span>`
+								: `<span class="sys-pill error">${system}</span>`;
 						});
 						tempHtml = tempHtml.join('');
-						console.log( 'Page-power: >D>', tempHtml);
+						//console.log( 'Page-power: >D>', tempHtml);
 						row.querySelector('td:nth-child(11)').innerHTML = tempHtml;
 					}
 				}
@@ -61,13 +63,22 @@ function highlightSystems(){
 	$('span.sys-pill').on('click', sysPillHandler);
 }
 
-function sysPillHandler(e){
-	$('.rowNormal.active-row, .rowAlternate.active-row').removeClass('active-row');
+function sysPillHandler(e) {
+	$('.rowNormal.active-row, .rowAlternate.active-row').removeClass( 'active-row' );
 	$('.sys-pill.active').removeClass('active');
 	$(e.target).addClass('active');
 	$(e.target.parentNode.parentNode).addClass('active-row');
+
+	let sys = e.target.textContent.trim().toUpperCase();
+	//console.log('-Power- Clicked:', sys);
+	console.log('Page-power -- System Info:', sys, systemInfo.syscode[sys]);
 	
-	let sys = e.target.textContent;
-	console.log('-Power- Clicked:', sys);
-	console.log('Page-power -- System Info:', systemInfo.syscode[sys]);
+	$('.sys-pill').each((idx, syst) => { 
+		//console.log(idx, syst);
+		let sysSelected = syst.textContent.trim().toUpperCase();
+		if(sysSelected == sys){
+			$(syst).addClass('active');
+			$(syst.parentNode.parentNode).addClass('active-row');
+		}
+	});
 }
