@@ -14,7 +14,16 @@ $.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-powe
 });
 */
 
-pagePower();
+var systemInfo = {};
+$.get( 'https://deopconf01.corp.hkjc.com/download/attachments/136033628/SysInfo-Data.json?api=v2',
+	function (data) {
+		systemInfo = data;
+		pagePower();
+
+		$('#main-content').after('<div class="sys-info-div"></div>');
+		$('.sys-info-div').on('click', hideSysInfo);
+	}
+);
 
 function pagePower(){
 	console.log('Page-power: init function');
@@ -64,8 +73,7 @@ function highlightSystems(){
 }
 
 function sysPillHandler(e) {
-	$('.rowNormal.active-row, .rowAlternate.active-row').removeClass( 'active-row' );
-	$('.sys-pill.active').removeClass('active');
+	hideSysInfo()
 	$(e.target).addClass('active');
 	$(e.target.parentNode.parentNode).addClass('active-row');
 
@@ -79,6 +87,21 @@ function sysPillHandler(e) {
 		if(sysSelected == sys){
 			$(syst).addClass('active');
 			$(syst.parentNode.parentNode).addClass('active-row');
+			showSysInfo(systemInfo.syscode[sys]);
 		}
 	});
+}
+
+function showSysInfo(obj){
+	$('.sys-info-div').show();
+	$('.sys-info-div').html(JSON.stringify(obj)
+		.replaceAll('{', '')
+		.replaceAll('}','')
+		.replaceAll(':', '    ')
+		.replaceAll(',', '<br/>'));
+}
+function hideSysInfo(){
+	$('.sys-info-div').hide();
+	$('.rowNormal.active-row, .rowAlternate.active-row').removeClass( 'active-row' );
+	$('.sys-pill.active').removeClass('active');
 }
