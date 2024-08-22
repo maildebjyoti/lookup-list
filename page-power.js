@@ -22,6 +22,7 @@ $.get('https://deopconf01.corp.hkjc.com/download/attachments/136033628/SysInfo-D
 
 		$('#main-content').after('<div class="sys-info-div"></div>');
 		$('.sys-info-div').on('click', ppLib.hideSysInfo);
+		ppLib.hideSysInfo();
 
 		$('#main-content').after('<div class="highlight-btn">Highlight</div>');
 		$('.highlight-btn').on('click', ppLib.highlightSystems);
@@ -95,22 +96,58 @@ var ppLib = {
 			if (sysSelected == sys) {
 				$(syst).addClass('active');
 				$(syst.parentNode.parentNode).addClass('active-row');
-				ppLib.showSysInfo(systemInfo.syscode[sys]);
+				ppLib.showSysInfo(sys, systemInfo.syscode[sys]);
 			}
 		});
 	},
-	showSysInfo: function showSysInfo(obj) {
-		if (!obj) return;
+	showSysInfo: function (sysCode, sysObj) {
+		if (!sysObj) return;
 		$('.sys-info-div').show();
-		$('.sys-info-div').html(
-			JSON.stringify(obj)
-				.replaceAll('{', '')
-				.replaceAll('}', '')
-				.replaceAll(':', '    ')
-				.replaceAll(',', '<br/>')
-		);
+
+		let sysInfoContainer = `
+			<div class="sys-container">
+				<div class="sys-header">
+				  <h1>${sysCode}</h1>
+				  <h2>${sysObj.sysName}</h2>
+				</div>
+				
+				<div class="sys-row">
+				  <div class="sys-column">
+				    <h3>Criticality:</h3>
+				    <p>${sysObj.criticality}</p>
+				    <h3>Asset Health</h3>
+				    <p>${sysObj.assetHealth}</p>
+				    <h3>Cross Site</h3>
+				    <p>${sysObj.crossSite}</p>
+				    <h3>Endorsement</h3>
+				    <p>${sysObj.endorsed}</p>
+				  </div>
+				  <div class="sys-column">
+				    <h3>Department</h3>
+				    <p>${sysObj.dept}</p>
+				    <h3>Portfolio</h3>
+				    <p>${sysObj.portfolio}</p>
+				    <h3>Primary User Dept.</h3>
+				    <p>${sysObj.primeUserDept}</p>
+				    <h3>User Division</h3>
+				    <p>${sysObj.userDiv}</p>
+				  </div>
+				  <div class="sys-column">
+				    <h3>System Owner</h3>
+				    <p>${sysObj.sysOwner.replace('|', '</br>')}</p>
+				    <h3>System Manager</h3>
+				    <p>${sysObj.sysMgr.replace('|', '</br>')}</p>
+				    <h3>Portfolio Manager</h3>
+				    <p>${sysObj.portfolioMgr.replace('|', '</br>')}</p>
+				    <h3>Admin</h3>
+				    <p>${sysObj.admin.replace('|', '</br>')} <br/><strong>Ph : </Strong>${sysObj.adminContact} </p>
+				  </div>
+				</div>
+			</div>`;
+
+		$('.sys-info-div').html(sysInfoContainer);
 	},
-	hideSysInfo: function hideSysInfo() {
+	hideSysInfo: function () {
 		$('.sys-info-div').hide();
 		$('.rowNormal.active-row, .rowAlternate.active-row').removeClass('active-row');
 		$('.sys-pill.active').removeClass('active');

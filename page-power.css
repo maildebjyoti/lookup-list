@@ -54,10 +54,10 @@ span.sys-pill.active {
     position: fixed;
     background: #fff;
     padding: 5px;
-    border: 1px solid red;
+    border: 1px solid rgb(71, 62, 62);
     z-index: 999;
-    bottom: 10px;
-    right: 10px;
+    bottom: 8px;
+    right: 8px;
 }
 
 .highlight-btn {
@@ -66,11 +66,69 @@ span.sys-pill.active {
     background: orange;
     line-height: 25px;
     text-align: center;
-    border: 1px solid red;
+    border: 1px solid rgb(90, 63, 63);
     border-radius: 5px;
     cursor: pointer;
     position: fixed;
     bottom: 8px;
     z-index: 8;
     right: 8px;
+}
+
+.sys-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px;
+}
+
+.sys-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sys-header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.sys-header h2 {
+    font-size: 20px;
+    color: #666;
+}
+
+.sys-row {
+    display: flex;
+    justify-content: space-between;
+    // margin-bottom: 20px;
+}
+
+.sys-column {
+    flex: 1;
+    background-color: #f5f5f5;
+    padding: 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sys-column h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.sys-column p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .sys-row {
+        flex-direction: column;
+    }
+
+    .sys-column {
+        flex-basis: auto;
+        margin-bottom: 20px;
+    }
 }
