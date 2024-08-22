@@ -1,4 +1,3 @@
-
 /* Info Box */
 .confluence-information-macro.confluence-information-macro-information.conf-macro.output-block {
     background: #F5F5F5;
@@ -8,49 +7,70 @@
 .aui tbody tr:nth-child(2) {
     background: #121212 !important;
 }
-.aui tbody tr:nth-child(2) > th.jira-macro-table-underline-pdfexport {
+
+.aui tbody tr:nth-child(2)>th.jira-macro-table-underline-pdfexport {
     color: #F5F5F5;
 }
-.aui tbody tr:nth-child(2) > th.jira-macro-table-underline-pdfexport:hover {
+
+.aui tbody tr:nth-child(2)>th.jira-macro-table-underline-pdfexport:hover {
     background: #64CCC5 !important;
 }
 
 span.sys-pill {
-	display: inline-flex;
-	background-color: #DAFFFB;
-	color: #04364A;
-	margin: 2px;
-	padding: 2px 5px;
-	cursor: pointer;
-	border-radius: 5px;
-	font-size: 12px;
-	font-weight: 500;
-	border: 1px solid #04364A;
+    display: inline-flex;
+    background-color: #DAFFFB;
+    color: #04364A;
+    margin: 2px;
+    padding: 2px 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid #04364A;
 }
+
 span.sys-pill:hover {
-	background-color: #FFCF96;
-	color: #04364A;
-	/* font-weight: 800; */
+    background-color: #FFCF96;
+    color: #04364A;
+    /* font-weight: 800; */
 }
+
 span.sys-pill.error {
     background: #C80036;
     color: #FFE7E7;
 }
+
 span.sys-pill.active {
     background: #0C1844;
     color: #FFF5E1;
 }
 
-.rowNormal.active-row, .rowAlternate.active-row {
+.rowNormal.active-row,
+.rowAlternate.active-row {
     background-color: #fffad1;
 }
 
 .sys-info-div {
-	position: fixed;
+    position: fixed;
     background: #fff;
     padding: 5px;
     border: 1px solid red;
     z-index: 999;
     bottom: 10px;
     right: 10px;
+}
+
+.highlight-btn {
+    width: 100px;
+    height: 25px;
+    background: orange;
+    line-height: 25px;
+    text-align: center;
+    border: 1px solid red;
+    border-radius: 5px;
+    cursor: pointer;
+    position: fixed;
+    bottom: 8px;
+    z-index: 8;
+    right: 8px;
 }
