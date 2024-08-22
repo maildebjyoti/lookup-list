@@ -113,13 +113,13 @@ span.sys-pill.active {
 
 .sys-column h3 {
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 2px;
 }
 
 .sys-column p {
     font-size: 14px;
     color: #666;
-    margin-bottom: 10px;
+    margin: 0 0 0 16px;
 }
 
 @media (max-width: 768px) {
