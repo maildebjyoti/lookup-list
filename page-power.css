@@ -99,7 +99,7 @@ span.sys-pill.active {
 .sys-row {
     display: flex;
     justify-content: space-between;
-    // margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 .sys-column {
@@ -108,7 +108,7 @@ span.sys-pill.active {
     padding: 12px;
     margin-right: 5px;
     border-radius: 5px;
-    // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
 }
 
 .sys-column h3 {
