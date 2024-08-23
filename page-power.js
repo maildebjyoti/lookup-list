@@ -102,9 +102,11 @@ var ppLib = {
 	},
 	showSysInfo: function (sysCode, sysObj) {
 		if (!sysObj) return;
+		$('.sys-info-div').removeClass('minimize');
 		$('.sys-info-div').show();
 
 		let sysInfoContainer = `
+			<div id="sysBtn" class="sys-min-max">Min.</div>
 			<div class="sys-container">
 				<div class="sys-header">
 				  <h1>${sysCode}</h1>
@@ -146,13 +148,23 @@ var ppLib = {
 			</div>`;
 
 		$('.sys-info-div').html(sysInfoContainer);
+		$('#sysBtn').on('click', ppLib.sysInfoMinMax);
 	},
 	hideSysInfo: function () {
 		$('.sys-info-div').hide();
 		$('.rowNormal.active-row, .rowAlternate.active-row').removeClass('active-row');
 		$('.sys-pill.active').removeClass('active');
 	},
-	testNx: function () {
-		console.log('-- Test function --');
+	sysInfoMinMax: function (e) {
+		e.stopPropagation();
+		if ($('.sys-info-div.minimize').length > 0) {
+			$('.sys-info-div').removeClass('minimize');
+			$('.sys-container').show();
+			$('#sysBtn').text('Min.');
+		} else {
+			$('#sysBtn').text('Max.');
+			$('.sys-container').hide();
+			$('.sys-info-div').addClass('minimize');
+		}
 	}
 };
