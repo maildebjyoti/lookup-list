@@ -163,6 +163,7 @@ var ppLib = {
 		$('.sys-info-div').hide();
 		$('.rowNormal.active-row, .rowAlternate.active-row').removeClass('active-row');
 		$('.sys-pill.active').removeClass('active');
+		$('.rpt-sys-pill.active').removeClass('active');
 	},
 	sysInfoMinMax: function (e) {
 		e.stopPropagation();
@@ -201,6 +202,8 @@ var ppLib = {
 		return sysMap;
 	},
 	dependencyTable: function (e) {
+		ppLib.hideSysInfo();
+
 		let sysMap = ppLib.genDependency();
 		console.log('--> Dependency Table', sysMap);
 
@@ -242,6 +245,14 @@ var ppLib = {
 		}
 		$('.report').html(cont);
 		$('.report-container').show();
+
+		$('.rpt-sys-pill').off();
+		$('.rpt-sys-pill').on('click', (sys) => {
+			let sysSelected = sys.target.textContent.trim().toUpperCase();
+			$('.rpt-sys-pill.active').removeClass('active');
+			$(sys.target).addClass('active');
+			ppLib.showSysInfo(sysSelected, systemInfo.syscode[sysSelected]);
+		});
 	},
 	dependencyGraph: function (e) {
 		let sysMap = ppLib.genDependency();

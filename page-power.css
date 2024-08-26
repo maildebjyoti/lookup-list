@@ -213,7 +213,7 @@ span.sys-pill.active {
     background: #fff;
     margin: auto;
     width: 75%;
-    margin-top: 80px;
+    margin-top: 40px;
     border-radius: 10px;
 }
 
@@ -227,7 +227,7 @@ span.sys-pill.active {
     border-radius: 50%;
     color: #fff;
     position: absolute;
-    top: 50px;
+    top: 20px;
     right: 12%;
     cursor: pointer;
     font-weight: 100;
@@ -286,10 +286,16 @@ span.rpt-sys-pill {
     display: inline-table;
     background: #dafffb;
     margin: 2px;
-    width: 100px;
+    width: 90px;
     text-align: center;
     padding: 2px;
     border-radius: 5px;
     font-weight: 500;
     border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+span.rpt-sys-pill:hover,
+span.rpt-sys-pill.active {
+    background: #ffcf96;
 }
