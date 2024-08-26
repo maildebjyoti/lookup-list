@@ -163,13 +163,10 @@ span.sys-pill.active {
 
 @keyframes minimize {
     0% {
-        // opacity: 1;
-        //transform: translateY(0);
         height: auto;
     }
 
     100% {
-        // opacity: 0;
         transform: translateY(-30px);
         height: 30px;
         width: 110px;
@@ -305,4 +302,51 @@ span.rpt-sys-pill {
 span.rpt-sys-pill:hover,
 span.rpt-sys-pill.active {
     background: #ffcf96;
+}
+
+.dept-sys-count {
+    float: right;
+    font-size: small;
+    text-align: center;
+    background: #bef7f0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    line-height: 30px;
+}
+
+.pfolio-sys-count {
+    float: right;
+    text-align: center;
+    background: #e6f2f0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    line-height: 24px;
+    font-weight: 300;
+    font-size: 12px;
+}
+
+.criti-sys-count {
+    float: right;
+    text-align: center;
+    background: #e8eded;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    line-height: 20px;
+    font-weight: 300;
+    font-size: 11px;
+}
+
+.total-sys-count {
+    position: absolute;
+    top: 20px;
+    left: 60px;
+    height: 40px;
+    background: #eee;
+    line-height: 40px;
+    border-radius: 8px;
+    text-align: center;
+    padding: 0 10px;
 }

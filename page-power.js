@@ -211,19 +211,19 @@ var ppLib = {
 		ppLib.hideSysInfo();
 
 		let sysMap = ppLib.genDependency();
-		console.log('--> Dependency Table', sysMap);
+		// console.log('--> Dependency Table', sysMap);
 
 		let dept = Object.keys(sysMap).sort();
 		let cont = $('<div>').addClass('rpt-systems-cont');
 		for (let i of dept) {
-			console.log(i); //Department
+			// console.log(i); //Department
 			let newDept = $('<div>').addClass('rpt-systems-dept');
 			let deptName = $('<h2>').text(i);
 			newDept.append(deptName);
 
 			let portfolio = Object.keys(sysMap[i]).sort();
 			for (let j of portfolio) {
-				console.log('\t', j); //Portfolio
+				// console.log('\t', j); //Portfolio
 				let newPort = $('<div>').addClass('rpt-systems-portfolio');
 				let portName = $('<h3>').text(j);
 				newPort.append(portName);
@@ -231,7 +231,7 @@ var ppLib = {
 				let criticality = Object.keys(sysMap[i][j]).sort();
 				for (let k of criticality) {
 					sysMap[i][j][k].sort();
-					console.log('\t\t', k, `:[${sysMap[i][j][k].length}]`, ' --> ', sysMap[i][j][k].join(', ')); //Criticality & Systems
+					// console.log('\t\t', k, `:[${sysMap[i][j][k].length}]`, ' --> ', sysMap[i][j][k].join(', ')); //Criticality & Systems
 					// console.log('\t\t', k, `:[${sysMap[i][j][k].length}]`); //Criticality
 					let newCrit = $('<div>').addClass('rpt-systems-criticality');
 					let critName = $('<h4>').text(k);
@@ -259,6 +259,29 @@ var ppLib = {
 			$(sys.target).addClass('active');
 			ppLib.showSysInfo(sysSelected, systemInfo.syscode[sysSelected]);
 		});
+
+		//Dept-Sys Counts
+		$('.report-display .rpt-systems-dept').each((i, obj) => {
+			let count = obj.querySelectorAll('.rpt-sys-pill').length;
+			let dept = obj.querySelector('h2').textContent;
+			obj.querySelector('h2').innerHTML = (`${dept}<span class="dept-sys-count">${count}</span>`);
+		});
+
+		//Portfolio-Sys Counts
+		$('.report-display .rpt-systems-portfolio').each((i, obj) => {
+			let count = obj.querySelectorAll('.rpt-sys-pill').length;
+			let pfolio = obj.querySelector('h3').textContent;
+			obj.querySelector('h3').innerHTML = (`${pfolio}<span class="pfolio-sys-count">${count}</span>`);
+		});
+
+		//Criticality-Sys Counts
+		$('.report-display .rpt-systems-criticality').each((i, obj) => {
+			let count = obj.querySelectorAll('.rpt-sys-pill').length;
+			let criti = obj.querySelector('h4').textContent;
+			obj.querySelector('h4').innerHTML = (`${criti}<span class="criti-sys-count">${count}</span>`);
+		});
+
+		$('.report-display .report').after(`<span class="total-sys-count">Total Systems: ${$('.report-display .rpt-sys-pill').length}</span>`);
 	},
 	dependencyGraph: function (e) {
 		let sysMap = ppLib.genDependency();
