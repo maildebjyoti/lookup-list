@@ -1,5 +1,19 @@
 console.log('Page-power:v1');
+
 /*
+//Load D3 & Plot Libs
+$.get('https://cdn.jsdelivr.net/npm/d3@7').then(js => {
+	let scriptFunction = new Function(js);
+	scriptFunction();
+	console.log('D3 Loaded');
+    
+	$.get('https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6').then(js => {
+		let scriptFunction = new Function(js);
+		scriptFunction();
+		console.log('D3 Plot Loaded');
+	});
+});
+
 $.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.js' + '?t=' + (new Date()).toISOString()).then(js => {
 	let scriptFunction = new Function(js);
 	scriptFunction();
@@ -35,6 +49,10 @@ $.get('https://deopconf01.corp.hkjc.com/download/attachments/136033628/SysInfo-D
 		$('#main-content').after('<div class="report-container"><div class="report-display"><div class="close-btn">X</div><div class="report"></div></div></div>');
 		ppLib.hideReport();
 		$('.report-container .close-btn').on('click', ppLib.hideReport);
+
+		$('#main-content').after('<div class="graph-container"><div class="graph-display"><div class="close-btn">X</div><div class="report"></div></div></div>');
+		ppLib.hideGraph();
+		$('.graph-container .close-btn').on('click', ppLib.hideGraph);
 	}
 );
 var ppLib = {
@@ -283,11 +301,19 @@ var ppLib = {
 
 		$('.report-display .report').after(`<span class="total-sys-count">Total Systems: ${$('.report-display .rpt-sys-pill').length}</span>`);
 	},
+	hideReport: function () {
+		$('.report-container').hide();
+	},
 	dependencyGraph: function (e) {
 		let sysMap = ppLib.genDependency();
 		console.log('--> Dependency Graph', sysMap);
+		$('.graph-container').show();
+		document.querySelector(".graph-display .report").innerHTML = '';
+		const plot = Plot.rectY({ length: 10000 }, Plot.binX({ y: "count" }, { x: Math.random })).plot();
+		const div = document.querySelector(".graph-display .report");
+		div.append(plot);
 	},
-	hideReport: function () {
-		$('.report-container').hide();
+	hideGraph: function () {
+		$('.graph-container').hide();
 	}
 };

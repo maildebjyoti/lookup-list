@@ -240,6 +240,7 @@ span.sys-pill.active {
 
 .rpt-systems-cont {
     display: flex;
+    justify-content: space-between;
 }
 
 .rpt-systems-dept {
@@ -349,4 +350,22 @@ span.rpt-sys-pill.active {
     border-radius: 8px;
     text-align: center;
     padding: 0 10px;
+}
+
+.graph-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #666464;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+}
+
+.graph-display {
+    background: #fff;
+    margin: auto;
+    width: 75%;
+    margin-top: 40px;
+    border-radius: 10px;
 }
