@@ -154,6 +154,12 @@ var ppLib = {
 				    <p>${sysObj.admin.replaceAll('|', '</br>')} <br/><strong>Ph : </Strong>${sysObj.adminContact} </p>
 				  </div>
 				</div>
+
+				<div class="sys-footer">
+				  <span>Infra: ${$('#Infra .active-row').length} |</span>
+				  <span>App: ${$('#software .active-row').length} |</span>
+				  <span>Exp: ${$('#Exp .active-row').length}</span>
+				</div>
 			</div>`;
 
 		$('.sys-info-div').html(sysInfoContainer);

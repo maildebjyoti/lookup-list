@@ -105,6 +105,13 @@ span.sys-pill.active {
     /* margin-bottom: 20px; */
 }
 
+.sys-footer {
+    position: absolute;
+    top: 8px;
+    font-size: small;
+    color: #555;
+}
+
 .sys-column {
     flex: 1;
     background-color: #f5f5f5;
