@@ -33,7 +33,10 @@ $.get('https://deopconf01.corp.hkjc.com/download/attachments/136033628/SysInfo-D
 	function (data) {
 		systemInfo = data;
 		ppLib.init();
-
+	}
+);
+var ppLib = {
+	init: function () {
 		$('#main-content').after('<div class="sys-info-div"></div>');
 		$('.sys-info-div').on('click', ppLib.hideSysInfo);
 		ppLib.hideSysInfo();
@@ -53,15 +56,8 @@ $.get('https://deopconf01.corp.hkjc.com/download/attachments/136033628/SysInfo-D
 		$('#main-content').after('<div class="graph-container"><div class="graph-display"><div class="close-btn">X</div><div class="report"></div></div></div>');
 		ppLib.hideGraph();
 		$('.graph-container .close-btn').on('click', ppLib.hideGraph);
-	}
-);
-var ppLib = {
-	init: function () {
+
 		console.log('Page-power: init function');
-		let test = document.querySelectorAll(
-			'#main-content > div.confluence-information-macro.confluence-information-macro-information.conf-macro.output-block'
-		)[0].textContent;
-		console.log(test);
 
 		setTimeout(() => {
 			ppLib.highlightSystems();
