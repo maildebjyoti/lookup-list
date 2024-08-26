@@ -26,6 +26,15 @@ $.get('https://deopconf01.corp.hkjc.com/download/attachments/136033628/SysInfo-D
 
 		$('#main-content').after('<div class="highlight-btn">Highlight</div>');
 		$('.highlight-btn').on('click', ppLib.highlightSystems);
+
+		$('#main-content').after('<div class="dependency-table-btn">Dep. Table</div>');
+		$('.dependency-table-btn').on('click', ppLib.dependencyTable);
+		$('#main-content').after('<div class="dependency-graph-btn">Dep. Graph</div>');
+		$('.dependency-graph-btn').on('click', ppLib.dependencyGraph);
+
+		$('#main-content').after('<div class="report-container"><div class="report-display"><div class="close-btn">X</div><div class="report"></div></div></div>');
+		ppLib.hideReport();
+		$('.report-container .close-btn').on('click', ppLib.hideReport);
 	}
 );
 var ppLib = {
@@ -136,13 +145,13 @@ var ppLib = {
 				  </div>
 				  <div class="sys-column">
 				    <h3>System Owner</h3>
-				    <p>${sysObj.sysOwner.replace('|', '</br>')}</p>
+				    <p>${sysObj.sysOwner.replaceAll('|', '</br>')}</p>
 				    <h3>System Manager</h3>
-				    <p>${sysObj.sysMgr.replace('|', '</br>')}</p>
+				    <p>${sysObj.sysMgr.replaceAll('|', '</br>')}</p>
 				    <h3>Portfolio Manager</h3>
-				    <p>${sysObj.portfolioMgr.replace('|', '</br>')}</p>
+				    <p>${sysObj.portfolioMgr.replaceAll('|', '</br>')}</p>
 				    <h3>Admin</h3>
-				    <p>${sysObj.admin.replace('|', '</br>')} <br/><strong>Ph : </Strong>${sysObj.adminContact} </p>
+				    <p>${sysObj.admin.replaceAll('|', '</br>')} <br/><strong>Ph : </Strong>${sysObj.adminContact} </p>
 				  </div>
 				</div>
 			</div>`;
@@ -166,5 +175,79 @@ var ppLib = {
 			$('.sys-container').hide();
 			$('.sys-info-div').addClass('minimize');
 		}
+	},
+	genDependency: function () {
+		let sysArr = [];
+		let sysMap = {};
+		$('#software .sys-pill').each((idx, syst) => {
+			let sys = syst.textContent.trim().toUpperCase();
+			if (sysArr.indexOf(sys) == -1) {
+				if (systemInfo.syscode.hasOwnProperty(sys)) {
+					sysArr.push(sys);
+
+					if (!sysMap.hasOwnProperty(systemInfo.syscode[sys].dept)) {
+						sysMap[systemInfo.syscode[sys].dept] = {};
+					}
+					if (!sysMap[systemInfo.syscode[sys].dept].hasOwnProperty(systemInfo.syscode[sys].portfolio)) {
+						sysMap[systemInfo.syscode[sys].dept][systemInfo.syscode[sys].portfolio] = {};
+					}
+					if (!sysMap[systemInfo.syscode[sys].dept][systemInfo.syscode[sys].portfolio].hasOwnProperty(systemInfo.syscode[sys].criticality)) {
+						sysMap[systemInfo.syscode[sys].dept][systemInfo.syscode[sys].portfolio][systemInfo.syscode[sys].criticality] = [];
+					}
+					sysMap[systemInfo.syscode[sys].dept][systemInfo.syscode[sys].portfolio][systemInfo.syscode[sys].criticality].push(sys);
+				}
+			}
+		});
+		return sysMap;
+	},
+	dependencyTable: function (e) {
+		let sysMap = ppLib.genDependency();
+		console.log('--> Dependency Table', sysMap);
+
+		let dept = Object.keys(sysMap).sort();
+		let cont = $('<div>').addClass('rpt-systems-cont');
+		for (let i of dept) {
+			console.log(i); //Department
+			let newDept = $('<div>').addClass('rpt-systems-dept');
+			let deptName = $('<h2>').text(i);
+			newDept.append(deptName);
+
+			let portfolio = Object.keys(sysMap[i]).sort();
+			for (let j of portfolio) {
+				console.log('\t', j); //Portfolio
+				let newPort = $('<div>').addClass('rpt-systems-portfolio');
+				let portName = $('<h3>').text(j);
+				newPort.append(portName);
+
+				let criticality = Object.keys(sysMap[i][j]).sort();
+				for (let k of criticality) {
+					sysMap[i][j][k].sort();
+					console.log('\t\t', k, `:[${sysMap[i][j][k].length}]`, ' --> ', sysMap[i][j][k].join(', ')); //Criticality & Systems
+					// console.log('\t\t', k, `:[${sysMap[i][j][k].length}]`); //Criticality
+					let newCrit = $('<div>').addClass('rpt-systems-criticality');
+					let critName = $('<h4>').text(k);
+					newCrit.append(critName);
+
+					let systems = sysMap[i][j][k].sort();
+					for (let l of systems) {
+						// console.log('\t\t\t', l); //Systems
+						let newSys = $('<span>').text(l).addClass('rpt-sys-pill');
+						newCrit.append(newSys);
+					}
+					newPort.append(newCrit);
+				}
+				newDept.append(newPort);
+			}
+			cont.append(newDept);
+		}
+		$('.report').html(cont);
+		$('.report-container').show();
+	},
+	dependencyGraph: function (e) {
+		let sysMap = ppLib.genDependency();
+		console.log('--> Dependency Graph', sysMap);
+	},
+	hideReport: function () {
+		$('.report-container').hide();
 	}
 };

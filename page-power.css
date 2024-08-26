@@ -156,12 +156,140 @@ span.sys-pill.active {
 
 @keyframes minimize {
     0% {
+        // opacity: 1;
+        //transform: translateY(0);
         height: auto;
     }
 
     100% {
+        // opacity: 0;
         transform: translateY(-30px);
         height: 30px;
         width: 110px;
     }
+}
+
+.dependency-table-btn {
+    width: 100px;
+    height: 25px;
+    background: cyan;
+    line-height: 25px;
+    text-align: center;
+    border: 1px solid rgb(90, 63, 63);
+    border-radius: 5px;
+    cursor: pointer;
+    position: fixed;
+    bottom: 8px;
+    z-index: 8;
+    right: 115px;
+}
+
+.dependency-graph-btn {
+    width: 100px;
+    height: 25px;
+    background: cyan;
+    line-height: 25px;
+    text-align: center;
+    border: 1px solid rgb(90, 63, 63);
+    border-radius: 5px;
+    cursor: pointer;
+    position: fixed;
+    bottom: 8px;
+    z-index: 8;
+    right: 224px;
+}
+
+.report-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #666464;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+}
+
+.report-display {
+    background: #fff;
+    margin: auto;
+    width: 75%;
+    margin-top: 80px;
+    border-radius: 10px;
+}
+
+.close-btn {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 36px;
+    background: #c90f0c;
+    text-align: center;
+    border-radius: 50%;
+    color: #fff;
+    position: absolute;
+    top: 50px;
+    right: 12%;
+    cursor: pointer;
+    font-weight: 100;
+    border: 1px solid #852725;
+}
+
+.rpt-systems-cont {
+    display: flex;
+}
+
+.rpt-systems-dept {
+    display: inline-table;
+    background: #f7f5f5;
+    margin: 8px;
+    width: 20%;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.report-display h1,
+.report-display h2,
+.report-display h3,
+.report-display h4 {
+    display: ruby-text;
+    padding: 5px 10px;
+    text-align: left;
+}
+
+.rpt-systems-portfolio {
+    display: ruby-text;
+    background: #edebeb;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.rpt-systems-portfolio h3::before {
+    color: #3d3a3a;
+    content: 'Portfolio: ';
+    font-size: 12px;
+    font-style: italic;
+}
+
+.rpt-systems-criticality {
+    display: ruby-text;
+    margin: 0px 0 5px 30px;
+}
+
+.rpt-systems-criticality h4 {
+    color: #a62b3b;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: -20px;
+}
+
+span.rpt-sys-pill {
+    display: inline-table;
+    background: #dafffb;
+    margin: 2px;
+    width: 100px;
+    text-align: center;
+    padding: 2px;
+    border-radius: 5px;
+    font-weight: 500;
+    border: 1px solid #ccc;
 }
