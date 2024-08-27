@@ -312,33 +312,41 @@ var ppLib = {
 
 		// Function to fetch & Load to display the olympians data
 		ppLib.loadCsvData(url).then((olympians) => {
-				console.log('D3 Olympians Dataset:', olympians);
-
-				// const plot = Plot.dot(olympians, {
-				// 	x: 'weight',
-				// 	y: 'height',
-				// 	stroke: 'sex',
-				// 	channels: { name: 'name', sport: 'sport' },
-				// 	tip: true,
-				// }).plot();
-
-				const plot = Plot.plot({
-					marks: [
-						Plot.dot(olympians, {
+			console.log('D3 Olympians Dataset:', olympians);
+			test = olympians;
+			const plot = Plot.plot({
+				// grid: true,
+				y: {
+					// type: "log",
+					domain: [1, 2.4],
+					grid: true
+				},
+				color: { legend: true },
+				title: 'Title: Text here',
+				subtitle: 'Subtitle: Additional Text here',
+				caption: 'Figure 1. Text desc. here',
+				marks: [
+					Plot.dot(
+						olympians.filter((rec) => rec.height > 0).filter((rec) => rec.weight > 0),
+						{
 							x: 'weight',
 							y: 'height',
 							stroke: 'sex',
 							channels: { name: 'name', sport: 'sport' },
 							tip: true,
-						}),
-						Plot.crosshair(olympians, { x: 'weight', y: 'height' }),
-					],
-				});
+						}
+					),
+					Plot.crosshair(olympians, { x: 'weight', y: 'height' }),
+					Plot.frame(),
+					// Plot.text(['Titles, subtitles, captions, and annotations assist interpretation by telling the reader what’s interesting. Don’t make the reader work to find what you already know.'], { lineWidth: 30, frameAnchor: 'middle' }),
+				],
+			});
 
-				const div = document.querySelector('.graph-display .report');
-				div.append(plot);
-			})
-			.catch((error) => { console.error(error); });
+			const div = document.querySelector('.graph-display .report');
+			div.append(plot);
+		}).catch((error) => {
+			console.error(error);
+		});
 
 		// const plot = Plot.rectY({length: 10000}, Plot.binX({y: "count"}, {x: Math.random})).plot();
 		// const div = document.querySelector(".graph-display .report");
