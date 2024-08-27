@@ -5,8 +5,7 @@ async function loadDependencies() {
 		// Load dependencies in parallel
 		const [d3Js, plotJs, runtimeJs] = await Promise.all([
 			fetch('https://cdn.jsdelivr.net/npm/d3@7').then((res) => res.text()),
-			fetch('https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6').then((res) => res.text()),
-			fetch('https://cdn.jsdelivr.net/npm/@observablehq/runtime/dist/runtime.js').then((res) => res.text()),
+			fetch('https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6').then((res) => res.text())
 		]);
 
 		// Execute the loaded JavaScript
@@ -14,8 +13,6 @@ async function loadDependencies() {
 		console.log('D3 Loaded');
 		new Function(plotJs)();
 		console.log('D3 Plot Loaded');
-		//new Function(runtimeJs)();
-		//console.log('D3 Runtime Loaded');
 	} catch (error) {
 		console.error('D3: Error loading dependencies ', error);
 	}
@@ -305,15 +302,78 @@ var ppLib = {
 		$('.report-container').hide();
 	},
 	dependencyGraph: function (e) {
-		let sysMap = ppLib.genDependency();
-		console.log('--> Dependency Graph', sysMap);
+		//let sysMap = ppLib.genDependency();
+		console.log('--> Dependency Graph');
 		$('.graph-container').show();
-		document.querySelector(".graph-display .report").innerHTML = '';
-		const plot = Plot.rectY({ length: 10000 }, Plot.binX({ y: "count" }, { x: Math.random })).plot();
-		const div = document.querySelector(".graph-display .report");
-		div.append(plot);
+		document.querySelector('.graph-display .report').innerHTML = '';
+
+		// Define the URL of the CSV file
+		const url = 'https://static.observableusercontent.com/files/31ca24545a0603dce099d10ee89ee5ae72d29fa55e8fc7c9ffb5ded87ac83060d80f1d9e21f4ae8eb04c1e8940b7287d179fe8060d887fb1f055f430e210007c';
+
+		// Function to fetch & Load to display the olympians data
+		ppLib.loadCsvData(url).then((olympians) => {
+				console.log('D3 Olympians Dataset:', olympians);
+
+				// const plot = Plot.dot(olympians, {
+				// 	x: 'weight',
+				// 	y: 'height',
+				// 	stroke: 'sex',
+				// 	channels: { name: 'name', sport: 'sport' },
+				// 	tip: true,
+				// }).plot();
+
+				const plot = Plot.plot({
+					marks: [
+						Plot.dot(olympians, {
+							x: 'weight',
+							y: 'height',
+							stroke: 'sex',
+							channels: { name: 'name', sport: 'sport' },
+							tip: true,
+						}),
+						Plot.crosshair(olympians, { x: 'weight', y: 'height' }),
+					],
+				});
+
+				const div = document.querySelector('.graph-display .report');
+				div.append(plot);
+			})
+			.catch((error) => { console.error(error); });
+
+		// const plot = Plot.rectY({length: 10000}, Plot.binX({y: "count"}, {x: Math.random})).plot();
+		// const div = document.querySelector(".graph-display .report");
+		// div.append(plot);
 	},
 	hideGraph: function () {
 		$('.graph-container').hide();
-	}
+	},
+	loadCsvData: function (csvUrl) {
+		return fetch(csvUrl)
+			.then((response) => response.text())
+			.then((data) => {
+				function parseValue(value) {
+					if (value === 'true') return true;
+					if (value === 'false') return false;
+					if (value === '') return '';
+					if (!isNaN(value)) return parseFloat(value);
+					return value;
+				}
+
+				// Parse the CSV data
+				const rows = data.trim().split('\n');
+				const headers = rows[0].split(',');
+				const csvData = rows.slice(1).map((row) => {
+					const values = row.split(',');
+					return headers.reduce((obj, header, i) => {
+						obj[header] = parseValue(values[i]);
+						return obj;
+					}, {});
+				});
+				return csvData;
+			})
+			.catch((error) => {
+				console.error(error);
+				throw error;
+			});
+	},
 };
