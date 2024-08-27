@@ -1,40 +1,44 @@
 console.log('Page-power:v1');
 
-/*
-//Load D3 & Plot Libs
-$.get('https://cdn.jsdelivr.net/npm/d3@7').then(js => {
-	let scriptFunction = new Function(js);
-	scriptFunction();
-	console.log('D3 Loaded');
-    
-	$.get('https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6').then(js => {
-		let scriptFunction = new Function(js);
-		scriptFunction();
+async function loadDependencies() {
+	try {
+		// Load dependencies in parallel
+		const [d3Js, plotJs, runtimeJs] = await Promise.all([
+			fetch('https://cdn.jsdelivr.net/npm/d3@7').then((res) => res.text()),
+			fetch('https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6').then((res) => res.text()),
+			fetch('https://cdn.jsdelivr.net/npm/@observablehq/runtime/dist/runtime.js').then((res) => res.text()),
+		]);
+
+		// Execute the loaded JavaScript
+		new Function(d3Js)();
+		console.log('D3 Loaded');
+		new Function(plotJs)();
 		console.log('D3 Plot Loaded');
-	});
-});
-
-$.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.js' + '?t=' + (new Date()).toISOString()).then(js => {
-	let scriptFunction = new Function(js);
-	scriptFunction();
-	console.log('hello hello -- page-power:js');
-});
-
-$.get('https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.css' + '?t=' + (new Date()).toISOString()).then(css => {
-	let style = document.createElement('style');
-	style.innerHTML = css;
-	document.head.appendChild(style);
-	console.log('hello hello -- page-power:css');
-});
-*/
+		//new Function(runtimeJs)();
+		//console.log('D3 Runtime Loaded');
+	} catch (error) {
+		console.error('D3: Error loading dependencies ', error);
+	}
+}
 
 var systemInfo = {};
-$.get('https://deopconf01.corp.hkjc.com/download/attachments/136033628/SysInfo-Data.json?api=v2',
-	function (data) {
-		systemInfo = data;
+async function loadSystemDependencies() {
+	try {
+		// Load SysInfo-Data.json
+		const systemInfoResponse = await fetch('https://deopconf01.corp.hkjc.com/download/attachments/136033628/SysInfo-Data.json?api=v2');
+		if (!systemInfoResponse.ok) {
+			throw new Error(`Error loading SysInfo-Data.json: ${systemInfoResponse.status} - ${systemInfoResponse.statusText}`);
+		}
+		systemInfo = await systemInfoResponse.json();
 		ppLib.init();
+	} catch (error) {
+		console.error('Error loading SysInfo-Data.json:', error);
 	}
-);
+}
+
+loadDependencies();
+loadSystemDependencies();
+
 var ppLib = {
 	init: function () {
 		$('#main-content').after('<div class="sys-info-div"></div>');
