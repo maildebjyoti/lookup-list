@@ -203,6 +203,24 @@ span.sys-pill.active {
     right: 224px;
 }
 
+.close-btn {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 36px;
+    background: #c90f0c;
+    text-align: center;
+    border-radius: 50%;
+    color: #fff;
+    position: absolute;
+    top: 20px;
+    right: 12%;
+    cursor: pointer;
+    font-weight: 100;
+    border: 1px solid #852725;
+}
+
+/* Dependency Table */
 .report-container {
     position: fixed;
     top: 0;
@@ -221,33 +239,17 @@ span.sys-pill.active {
     border-radius: 10px;
 }
 
-.close-btn {
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    font-size: 36px;
-    background: #c90f0c;
-    text-align: center;
-    border-radius: 50%;
-    color: #fff;
-    position: absolute;
-    top: 20px;
-    right: 12%;
-    cursor: pointer;
-    font-weight: 100;
-    border: 1px solid #852725;
-}
 
-.rpt-systems-cont {
-    display: flex;
-    justify-content: space-between;
-}
+/* .rpt-systems-cont {
+     display: flex;
+     justify-content: space-between;
+} */
 
 .rpt-systems-dept {
     display: inline-table;
     background: #f7f5f5;
     margin: 8px;
-    width: 20%;
+    width: 18%;
     border-radius: 10px;
     padding: 5px;
 }
@@ -256,13 +258,13 @@ span.sys-pill.active {
 .report-display h2,
 .report-display h3,
 .report-display h4 {
-    display: ruby-text;
+    /* display: ruby-text; */
     padding: 5px 10px;
     text-align: left;
 }
 
 .rpt-systems-portfolio {
-    display: ruby-text;
+    /* display: ruby-text; */
     background: #edebeb;
     margin: 5px;
     border-radius: 5px;
@@ -276,7 +278,7 @@ span.sys-pill.active {
 }
 
 .rpt-systems-criticality {
-    display: ruby-text;
+    /* display: ruby-text; */
     margin: 0px 0 5px 30px;
 }
 
