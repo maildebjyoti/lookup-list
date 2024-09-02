@@ -76,13 +76,13 @@ var ppLib = {
 
 				if (textKey == 'SYSTEM LABELS') {
 					indexSystems = index;
-					//console.log('Page-power: >A>', i, indexSystems);
+					// console.log('Page-power: >A>', i, indexSystems);
 
 					let rows = obj.parentNode.children;
-					//console.log('Page-power: >B>', rows);
+					// console.log('Page-power: >B>', rows);
 					for (let row of rows) {
-						//console.log( 'Page-power: >C>', row.querySelector('td:nth-child(11)') );
-						let sys = row.querySelector('td:nth-child(11)');
+						// console.log( 'Page-power: >C>', row.querySelector('td:nth-child('+ indexSystems +')') );
+						let sys = row.querySelector('td:nth-child(' + indexSystems + ')');
 						if (sys && sys.querySelectorAll('.sys-pill').length < 1) {
 							sys = sys.textContent
 								.replaceAll('\n', '')
@@ -95,7 +95,7 @@ var ppLib = {
 							});
 							tempHtml = tempHtml.join('');
 							//console.log( 'Page-power: >D>', tempHtml);
-							row.querySelector('td:nth-child(11)').innerHTML = tempHtml;
+							row.querySelector('td:nth-child(' + indexSystems + ')').innerHTML = tempHtml;
 						}
 					}
 				}
