@@ -1,4 +1,29 @@
 console.log('Page-power:v1');
+async function loadPagePower() {
+    const resources = [
+        { url: 'https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.js', isScript: true },
+        { url: 'https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.css', isScript: false }
+    ];
+
+    for (const { url, isScript } of resources) {
+        try {
+            const response = await $.get(url);
+            if (isScript) {
+                new Function(response)();
+                console.log(`-- page-power:js`);
+            } else {
+                const style = document.createElement('style');
+                style.innerHTML = response;
+                document.head.appendChild(style);
+                console.log(`-- page-power:css`);
+            }
+        } catch (error) {
+            console.error(`Failed to load resource from ${url}:`, error);
+        }
+    }
+}
+loadPagePower();
+//*------------------------------------------------------------------------------------*/
 
 async function loadDependencies() {
 	try {
