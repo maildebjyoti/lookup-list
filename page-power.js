@@ -425,4 +425,8 @@ var ppLib = {
 				throw error;
 			});
 	},
+	loadCOdetails: function () {
+		let id = 'COT-282';
+		let url = `https://kmc.corp.hkjc.com/rest/api/latest/issue/${id}?fields=summary,details,status,issuelinks,customfield_13104,customfield_15231,customfield_15233,customfield_24201,customfield_13104`;
+	}
 };
