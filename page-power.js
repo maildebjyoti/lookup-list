@@ -119,7 +119,10 @@ var ppLib = {
 							if(colKey == 'LinkedIssues'){
 								colVal = colVal.replaceAll(' ', '');
 
-								if(colVal.indexOf('RGB') > -1){ //Separate RGB & CO Links
+								if(colKey == 'LinkedIssues'){
+									colVal = colVal.replaceAll(' ', '');
+
+									//Separate RGB & CO Links
 									colVal = colVal.split(',');
 									let tktCOs = colVal.filter((tkt)=>tkt.indexOf('COT')>-1);
 									let tktRGBs = colVal.filter((tkt)=>tkt.indexOf('RGB')>-1);
@@ -440,5 +443,9 @@ var ppLib = {
 	loadCOdetails: function () {
 		let id = 'COT-282';
 		let url = `https://kmc.corp.hkjc.com/rest/api/latest/issue/${id}?fields=summary,details,status,issuelinks,customfield_13104,customfield_15231,customfield_15233,customfield_24201,customfield_13104`;
+		
+		dataSet.forEach((item)=>{
+		    console.log(item.Key, item.LinkedCOs)
+		})
 	}
 };
