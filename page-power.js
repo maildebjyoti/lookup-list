@@ -115,23 +115,23 @@ var ppLib = {
 						for (let i of row.children) {
 							let colKey = rowHeader[colCount];
 							let colVal = i.textContent.replaceAll('\n', ' ').trim();
-							
-							if(colKey == 'LinkedIssues'){
+
+							if (colKey == 'LinkedIssues') {
 								colVal = colVal.replaceAll(' ', '');
 
-								if(colKey == 'LinkedIssues'){
+								if (colKey == 'LinkedIssues') {
 									colVal = colVal.replaceAll(' ', '');
 
 									//Separate RGB & CO Links
 									colVal = colVal.split(',');
-									let tktCOs = colVal.filter((tkt)=>tkt.indexOf('COT')>-1);
-									let tktRGBs = colVal.filter((tkt)=>tkt.indexOf('RGB')>-1);
-									
+									let tktCOs = colVal.filter((tkt) => tkt.indexOf('COT') > -1);
+									let tktRGBs = colVal.filter((tkt) => tkt.indexOf('RGB') > -1);
+
 									tempObj['LinkedCOs'] = tktCOs; //Create Key-Value Object for Linked COs
 									colVal = tktRGBs; //Filter LinkedIssues to only RGB tickets
 								}
 							}
-							
+
 							tempObj[colKey] = colVal; //Create Key-Value Object
 
 							if (colKey == 'SystemLabels') {
@@ -147,7 +147,30 @@ var ppLib = {
 									tempHtml = tempHtml.join('');
 									i.innerHTML = tempHtml;
 								}
+
+								let dataCheck = i.textContent.trim().replaceAll(' ', '');
+								if (!dataCheck || dataCheck == 'TBD') $(i).addClass('error');
 							}
+
+							colVal = colVal.toString().toUpperCase();
+							if (colKey == 'DMLink' && colVal.indexOf('XXXX') > -1) {
+								$(i).addClass('error');
+							}
+							if (colKey == 'ProjectLink' && colVal.indexOf('XXXX') > -1) {
+								$(i).addClass('error');
+							}
+							if (colKey == 'Summary' && colVal.indexOf('XXXX') > -1) {
+								$(i).addClass('error');
+							}
+							if (colKey == 'Portfolio') {
+								if (!colVal) $(i).addClass('error');
+								if (colVal.indexOf('<PORTFOLIO') > -1) $(i).addClass('error');
+							}
+							if (colKey == 'AcceptedbySA') {
+								if (!colVal) $(i).addClass('error');
+								if (colVal.indexOf('NO') > -1) $(i).addClass('error');
+							}
+
 							colCount++;
 						}
 						rowData.push(tempObj);
@@ -443,9 +466,9 @@ var ppLib = {
 	loadCOdetails: function () {
 		let id = 'COT-282';
 		let url = `https://kmc.corp.hkjc.com/rest/api/latest/issue/${id}?fields=summary,details,status,issuelinks,customfield_13104,customfield_15231,customfield_15233,customfield_24201,customfield_13104`;
-		
-		dataSet.forEach((item)=>{
-		    console.log(item.Key, item.LinkedCOs)
+
+		dataSet.forEach((item) => {
+			console.log(item.Key, item.LinkedCOs)
 		})
 	}
 };

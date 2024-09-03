@@ -146,6 +146,10 @@ span.sys-pill.active {
     right: 8px;
 }
 
+.jira-issues td.error {
+    background: #ffdbdb;
+}
+
 @media (max-width: 768px) {
     .sys-row {
         flex-direction: column;
