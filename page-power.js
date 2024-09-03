@@ -91,8 +91,8 @@ var ppLib = {
 		}, 10000);
 	},
 	highlightSystems: function () {
+		rowData = [];
 		$('.aui tbody tr:nth-child(2)').each((idx, obj) => {
-
 			let index = 1,
 				indexSystems = -1,
 				rowHeader = [],
@@ -115,7 +115,21 @@ var ppLib = {
 						for (let i of row.children) {
 							let colKey = rowHeader[colCount];
 							let colVal = i.textContent.replaceAll('\n', ' ').trim();
-							tempObj[colKey] = colVal;
+							
+							if(colKey == 'LinkedIssues'){
+								colVal = colVal.replaceAll(' ', '');
+
+								if(colVal.indexOf('RGB') > -1){ //Separate RGB & CO Links
+									colVal = colVal.split(',');
+									let tktCOs = colVal.filter((tkt)=>tkt.indexOf('COT')>-1);
+									let tktRGBs = colVal.filter((tkt)=>tkt.indexOf('RGB')>-1);
+									
+									tempObj['LinkedCOs'] = tktCOs; //Create Key-Value Object for Linked COs
+									colVal = tktRGBs; //Filter LinkedIssues to only RGB tickets
+								}
+							}
+							
+							tempObj[colKey] = colVal; //Create Key-Value Object
 
 							if (colKey == 'SystemLabels') {
 								let sys = colVal;
@@ -131,14 +145,12 @@ var ppLib = {
 									i.innerHTML = tempHtml;
 								}
 							}
-							//if(colKey == 'LinkedIssues'){}
 							colCount++;
 						}
 						rowData.push(tempObj);
 					}
 				}
 				rowCount++;
-
 			}
 		});
 		$('span.sys-pill').off();
