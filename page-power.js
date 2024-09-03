@@ -1,26 +1,26 @@
 console.log('Page-power:v1');
 async function loadPagePower() {
-    const resources = [
-        { url: 'https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.js', isScript: true },
-        { url: 'https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.css', isScript: false }
-    ];
+	const resources = [
+		{ url: 'https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.js', isScript: true },
+		{ url: 'https://raw.githubusercontent.com/maildebjyoti/lookup-list/main/page-power.css', isScript: false }
+	];
 
-    for (const { url, isScript } of resources) {
-        try {
-            const response = await $.get(url);
-            if (isScript) {
-                new Function(response)();
-                console.log(`-- page-power:js`);
-            } else {
-                const style = document.createElement('style');
-                style.innerHTML = response;
-                document.head.appendChild(style);
-                console.log(`-- page-power:css`);
-            }
-        } catch (error) {
-            console.error(`Failed to load resource from ${url}:`, error);
-        }
-    }
+	for (const { url, isScript } of resources) {
+		try {
+			const response = await $.get(url);
+			if (isScript) {
+				new Function(response)();
+				console.log(`-- page-power:js`);
+			} else {
+				const style = document.createElement('style');
+				style.innerHTML = response;
+				document.head.appendChild(style);
+				console.log(`-- page-power:css`);
+			}
+		} catch (error) {
+			console.error(`Failed to load resource from ${url}:`, error);
+		}
+	}
 }
 loadPagePower();
 //*------------------------------------------------------------------------------------*/
@@ -43,7 +43,8 @@ async function loadDependencies() {
 	}
 }
 
-var systemInfo = {};
+//Global Variables
+var systemInfo = {}, rowData = [];
 async function loadSystemDependencies() {
 	try {
 		// Load SysInfo-Data.json
@@ -91,44 +92,59 @@ var ppLib = {
 	},
 	highlightSystems: function () {
 		$('.aui tbody tr:nth-child(2)').each((idx, obj) => {
-			//console.log(idx, obj);
 
 			let index = 1,
-				indexSystems = -1;
+				indexSystems = -1,
+				rowHeader = [],
+				rowCount = 0,
+				colCount = -1,
+				rows = obj.parentNode.children;
 
-			for (let i of obj.children) {
-				let textKey = i.textContent.trim().toUpperCase();
-
-				if (textKey == 'SYSTEM LABELS') {
-					indexSystems = index;
-					// console.log('Page-power: >A>', i, indexSystems);
-
-					let rows = obj.parentNode.children;
-					// console.log('Page-power: >B>', rows);
-					for (let row of rows) {
-						// console.log( 'Page-power: >C>', row.querySelector('td:nth-child('+ indexSystems +')') );
-						let sys = row.querySelector('td:nth-child(' + indexSystems + ')');
-						if (sys && sys.querySelectorAll('.sys-pill').length < 1) {
-							sys = sys.textContent
-								.replaceAll('\n', '')
-								.replaceAll(' ', '');
-							sys = sys.split(',');
-							let tempHtml = sys.map((system) => {
-								return systemInfo.syscode.hasOwnProperty(system.trim().toUpperCase())
-									? `<span class="sys-pill">${system}</span>`
-									: `<span class="sys-pill error">${system}</span>`;
-							});
-							tempHtml = tempHtml.join('');
-							//console.log( 'Page-power: >D>', tempHtml);
-							row.querySelector('td:nth-child(' + indexSystems + ')').innerHTML = tempHtml;
+			for (let row of rows) {
+				if (row.childElementCount > 0) {
+					if (rowCount == 1) { //Handle Header
+						for (let i of row.children) {
+							let textKey = i.textContent.trim().replaceAll(' ', '');
+							rowHeader.push(textKey);
+							if (textKey == 'SystemLabels') indexSystems = index;
+							index++;
 						}
+					} else { //Handle Rows
+						colCount = 0;
+						let tempObj = {};
+						for (let i of row.children) {
+							let colKey = rowHeader[colCount];
+							let colVal = i.textContent.replaceAll('\n', ' ').trim();
+							tempObj[colKey] = colVal;
+
+							if (colKey == 'SystemLabels') {
+								let sys = colVal;
+								if (sys && i.querySelectorAll('.sys-pill').length < 1) {
+									sys = sys.replaceAll('\n', '').replaceAll(' ', '');
+									sys = sys.split(',');
+									let tempHtml = sys.map((system) => {
+										return systemInfo.syscode.hasOwnProperty(system.trim().toUpperCase())
+											? `<span class="sys-pill">${system}</span>`
+											: `<span class="sys-pill error">${system}</span>`;
+									});
+									tempHtml = tempHtml.join('');
+									i.innerHTML = tempHtml;
+								}
+							}
+							//if(colKey == 'LinkedIssues'){}
+							colCount++;
+						}
+						rowData.push(tempObj);
 					}
 				}
-				index++;
+				rowCount++;
+
 			}
 		});
 		$('span.sys-pill').off();
 		$('span.sys-pill').on('click', ppLib.sysPillHandler);
+
+		console.log('Page-power: >>', rowData);
 	},
 	sysPillHandler: function (e) {
 		ppLib.hideSysInfo();
