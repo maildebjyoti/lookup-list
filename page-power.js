@@ -44,7 +44,7 @@ async function loadDependencies() {
 }
 
 //Global Variables
-var systemInfo = {}, rowData = [];
+var systemInfo = {}, rowData = {};
 async function loadSystemDependencies() {
 	try {
 		// Load SysInfo-Data.json
@@ -91,7 +91,7 @@ var ppLib = {
 		}, 10000);
 	},
 	highlightSystems: function () {
-		rowData = [];
+		rowData = {};
 		$('.aui tbody tr:nth-child(2)').each((idx, obj) => {
 			let index = 1,
 				indexSystems = -1,
@@ -100,6 +100,7 @@ var ppLib = {
 				colCount = -1,
 				rows = obj.parentNode.children;
 
+			rowData['tab'+idx] = [];
 			for (let row of rows) {
 				if (row.childElementCount > 0) {
 					if (rowCount == 1) { //Handle Header
@@ -173,7 +174,7 @@ var ppLib = {
 
 							colCount++;
 						}
-						rowData.push(tempObj);
+						rowData['tab'+idx].push(tempObj);
 					}
 				}
 				rowCount++;
