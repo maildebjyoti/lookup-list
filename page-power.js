@@ -92,6 +92,8 @@ var ppLib = {
 	},
 	highlightSystems: function () {
 		rowData = {};
+		let tab = $('#main-content .tabs-menu a').map((x, y)=> y.textContent.replaceAll(' ',''));
+
 		$('.aui tbody tr:nth-child(2)').each((idx, obj) => {
 			let index = 1,
 				indexSystems = -1,
@@ -100,7 +102,6 @@ var ppLib = {
 				colCount = -1,
 				rows = obj.parentNode.children;
 
-			rowData['tab'+idx] = [];
 			for (let row of rows) {
 				if (row.childElementCount > 0) {
 					if (rowCount == 1) { //Handle Header
@@ -174,7 +175,10 @@ var ppLib = {
 
 							colCount++;
 						}
-						rowData['tab'+idx].push(tempObj);
+						if(!rowData[tab[idx+1]]){
+							rowData[tab[idx+1]] = [];
+						}
+						rowData[tab[idx+1]].push(tempObj);
 					}
 				}
 				rowCount++;
