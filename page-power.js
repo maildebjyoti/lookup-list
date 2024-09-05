@@ -92,7 +92,7 @@ var ppLib = {
 	},
 	highlightSystems: function () {
 		rowData = {};
-		let tab = $('#main-content .tabs-menu a').map((x, y)=> y.textContent.replaceAll(' ',''));
+		let tab = $('#main-content .tabs-menu a').map((x, y) => y.textContent.replaceAll(' ', ''));
 
 		$('.aui tbody tr:nth-child(2)').each((idx, obj) => {
 			let index = 1,
@@ -175,10 +175,15 @@ var ppLib = {
 
 							colCount++;
 						}
-						if(!rowData[tab[idx+1]]){
-							rowData[tab[idx+1]] = [];
+						// if(!rowData[tab[idx+1]]){
+						// 	rowData[tab[idx+1]] = [];
+						// }
+						// rowData[tab[idx+1]].push(tempObj);
+						let tabTey = obj.parentElement.parentElement.parentElement.parentElement.parentElement.id;
+						if (!rowData[tabTey]) {
+							rowData[tabTey] = [];
 						}
-						rowData[tab[idx+1]].push(tempObj);
+						rowData[tabTey].push(tempObj);
 					}
 				}
 				rowCount++;
