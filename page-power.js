@@ -290,6 +290,14 @@ var ppLib = {
 	genDependency: function () {
 		let sysArr = [];
 		let sysMap = {};
+
+		/*
+		for(let row of rowData.software) {
+			console.log(row);
+			for(let i in row) console.log(i, ':', row[i]);
+		}
+		*/
+
 		$('#software .sys-pill').each((idx, syst) => {
 			let sys = syst.textContent.trim().toUpperCase();
 			if (sysArr.indexOf(sys) == -1) {
@@ -391,7 +399,7 @@ var ppLib = {
 		$('.report-container').hide();
 	},
 	dependencyGraph: function (e) {
-		//let sysMap = ppLib.genDependency();
+		/*//let sysMap = ppLib.genDependency();
 		console.log('--> Dependency Graph');
 		$('.graph-container').show();
 		document.querySelector('.graph-display .report').innerHTML = '';
@@ -436,10 +444,134 @@ var ppLib = {
 		}).catch((error) => {
 			console.error(error);
 		});
+		//*/
 
-		// const plot = Plot.rectY({length: 10000}, Plot.binX({y: "count"}, {x: Math.random})).plot();
-		// const div = document.querySelector(".graph-display .report");
-		// div.append(plot);
+		console.log('--> Dependency Graph');
+		$('.graph-container').show();
+		document.querySelector('.graph-display .report').innerHTML = '';
+
+		let rgbs = [];
+		for (let row of rowData.software) {
+			let sys = row.SystemLabels.split(',');
+			for (let i of sys) {
+				let tempObj = {};
+				tempObj['source'] = row.Key;
+				tempObj['RGB'] = row.Key;
+				tempObj['DM'] = row.DMLink;
+				tempObj['Prj'] = row.ProjectLink;
+				tempObj['Desc'] = row.Summary;
+				tempObj['PM'] = row.Reporter;
+				tempObj['type'] = 'suit';
+				tempObj['target'] = i;
+				rgbs.push(tempObj);
+			}
+		}
+		console.log('--A-->', rgbs);
+
+		function linkArc(d) {
+			const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
+			return `
+		    M${d.source.x},${d.source.y}
+		    A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
+		  `;
+		}
+		drag = simulation => {
+			function dragstarted(event, d) {
+				if (!event.active) simulation.alphaTarget(0.3).restart();
+				d.fx = d.x;
+				d.fy = d.y;
+			}
+			function dragged(event, d) {
+				d.fx = event.x;
+				d.fy = event.y;
+			}
+			function dragended(event, d) {
+				if (!event.active) simulation.alphaTarget(0);
+				d.fx = null;
+				d.fy = null;
+			}
+			return d3.drag()
+				.on("start", dragstarted)
+				.on("drag", dragged)
+				.on("end", dragended);
+		}
+
+		const width = 1200;
+		const height = 800;
+		const types = Array.from(new Set(rgbs.map(d => d.type)));
+		const nodes = Array.from(new Set(rgbs.flatMap(l => [l.source, l.target])), id => ({ id }));
+		const links = rgbs.map(d => Object.create(d));
+
+		const color = d3.scaleOrdinal(types, d3.schemeCategory10);
+
+		const simulation = d3.forceSimulation(nodes)
+			.force("link", d3.forceLink(links).id(d => d.id))
+			.force("charge", d3.forceManyBody().strength(-400))
+			.force("x", d3.forceX())
+			.force("y", d3.forceY());
+
+		const svg = d3.create("svg")
+			.attr("viewBox", [-width / 2, -height / 2, width, height])
+			.attr("width", width)
+			.attr("height", height)
+			.attr("style", "max-width: 100%; height: auto; font: 12px sans-serif;");
+
+		// Per-type markers, as they don't inherit styles.
+		svg.append("defs").selectAll("marker")
+			.data(types)
+			.join("marker")
+			.attr("id", d => `arrow-${d}`)
+			.attr("viewBox", "0 -5 10 10")
+			.attr("refX", 15)
+			.attr("refY", -0.5)
+			.attr("markerWidth", 6)
+			.attr("markerHeight", 6)
+			.attr("orient", "auto")
+			.append("path")
+			.attr("fill", color)
+			.attr("d", "M0,-5L10,0L0,5");
+
+		const link = svg.append("g")
+			.attr("fill", "none")
+			.attr("stroke-width", 1.5)
+			.selectAll("path")
+			.data(links)
+			.join("path")
+			.attr("stroke", d => color(d.type))
+			.attr("marker-end", d => `url(${new URL(`#arrow-${d.type}`, location)})`);
+
+		const node = svg.append("g")
+			.attr("fill", "currentColor")
+			.attr("stroke-linecap", "round")
+			.attr("stroke-linejoin", "round")
+			.selectAll("g")
+			.data(nodes)
+			.join("g")
+			.call(drag(simulation));
+
+		node.append("circle")
+			.attr("stroke", "white")
+			.attr("stroke-width", 1.5)
+			.attr("r", 4);
+
+		node.append("text")
+			.attr("x", 8)
+			.attr("y", "0.31em")
+			.text(d => d.id)
+			.clone(true).lower()
+			.attr("fill", "none")
+			.attr("stroke", "white")
+			.attr("stroke-width", 3);
+
+		simulation.on("tick", () => {
+			link.attr("d", linkArc);
+			node.attr("transform", d => `translate(${d.x},${d.y})`);
+		});
+
+		// invalidation.then(() => simulation.stop());
+		// return Object.assign(svg.node(), {scales: {color}});
+		const div = document.querySelector('.graph-display .report');
+		div.append(svg.node());
 	},
 	hideGraph: function () {
 		$('.graph-container').hide();
