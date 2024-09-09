@@ -4,7 +4,7 @@ const tktState = await page.waitForSelector('#opsbar-opsbar-transitions')
 if (tktState) {
     const textContentProperty = await tktState.getProperty('textContent');
     const textContent = await textContentProperty.jsonValue(); // Convert to string
-    console.log('A--', textContent);
+    console.log('Pup A--', textContent);
 }
 
 /* // Leave a comment after script execution
@@ -25,8 +25,13 @@ let comment = `This is a comment:
 - Also Do this
 Red {color:red}color{color}. *Bold*. _Italic_. +Underline+
 `;
-const commentTextBox = await page.waitForSelector('#comment');
-await commentTextBox.type(comment);
+await page.evaluate((selector, value) => {
+    const inputField = document.querySelector(selector);
+    if (inputField) {
+        inputField.value = value; // Set the input value
+        inputField.dispatchEvent(new Event('input', { bubbles: true })); // Trigger input event
+    }
+}, '#comment', comment);
 
 const commentVisualBtn = await page.waitForSelector('#comment-wiki-edit > nav > div > div > ul > li:first-child > button');
 await commentVisualBtn.click();
@@ -36,7 +41,7 @@ await commentSave.click();
 
 
 /*
-Check that it is a valid page - 
+Check that it is a valid page -
     eg matches the RGB ticket format - https://kmc.corp.hkjc.com/browse/RGB-10916?src=confmacro
 Check the ticket is in right ststus
 Check that the Systems Involved in - Release Scope & Reference-System Labels are the same
