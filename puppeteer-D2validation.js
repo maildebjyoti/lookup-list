@@ -7,12 +7,6 @@ if (tktState) {
     console.log('A--', textContent);
 }
 
-/* // Leave a comment after script execution
-const editBtn = await page.waitForSelector('#edit-issue');
-await editBtn.click();
- */
-
-
 const commentBtn = await page.waitForSelector('#footer-comment-button');
 await commentBtn.click();
 
@@ -28,15 +22,13 @@ Red {color:red}color{color}. *Bold*. _Italic_. +Underline+
 `;
 const commentTextBox = await page.waitForSelector('#comment');
 await commentTextBox.type(comment);
-// await commentTextBox.text(comment);
 
 const commentVisualBtn = await page.waitForSelector('#comment-wiki-edit > nav > div > div > ul > li:first-child > button');
 await commentVisualBtn.click();
 
-// console.log('F--');
 const commentSave = await page.waitForSelector('#issue-comment-add-submit');
 await commentSave.click();
-// console.log('G--');
+
 
 /*
 Check that it is a valid page - 
@@ -52,19 +44,4 @@ Check for the sub-tasks
         - check for emails attached as artefacts - - capture & attach screenshots
         - Provide a summary comment - both in sub-task & parent tickets
 
-*/
-
-
-
-
-/*await page.goto('https://wikipedia.org')
-
-const englishButton = await page.waitForSelector('#js-link-box-en > strong')
-await englishButton.click()
-
-const searchBox = await page.waitForSelector('#searchInput')
-await searchBox.type('telephone')
-
-await page.keyboard.press('Enter')
-await page.close()
 */
