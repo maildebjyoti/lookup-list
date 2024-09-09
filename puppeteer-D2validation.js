@@ -7,6 +7,11 @@ if (tktState) {
     console.log('A--', textContent);
 }
 
+/* // Leave a comment after script execution
+const editBtn = await page.waitForSelector('#edit-issue');
+await editBtn.click();
+ */
+
 const commentBtn = await page.waitForSelector('#footer-comment-button');
 await commentBtn.click();
 
