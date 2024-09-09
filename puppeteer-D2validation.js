@@ -1,0 +1,53 @@
+//await page.goto('https://kmc.corp.hkjc.com/browse/RGB-15267')
+
+const tktState = await page.waitForSelector('#opsbar-opsbar-transitions')
+if (tktState) {
+    const textContentProperty = await tktState.getProperty('textContent');
+    const textContent = await textContentProperty.jsonValue(); // Convert to string
+    console.log('A--', textContent);
+}
+
+// Leave a comment after script execution
+const editBtn = await page.waitForSelector('#footer-comment-button')
+await editBtn.click()
+// const commentTextBtn = await page.waitForSelector('#comment-wiki-edit > nav > div > div > ul > li:nth-child(2) > button')
+const commentVisualBtn = await page.waitForSelector('#comment-wiki-edit > nav > div > div > ul > li.nth-child(1) > button')
+await commentVisualBtn.click()
+let comment = `This is a comment:
+- Checked following things & Dates
+- Observations - some remarks
+- Do this
+- Also Do this
+`;
+
+
+/*
+Check that it is a valid page - 
+    eg matches the RGB ticket format - https://kmc.corp.hkjc.com/browse/RGB-10916?src=confmacro
+Check the ticket is in right ststus
+Check that the Systems Involved in - Release Scope & Reference-System Labels are the same
+Check for Ticket completeness - each tabs
+Check for the sub-tasks
+    Sanity:
+    Risk-Based Decision:
+    Readiness-Checklist:
+        - checkthe D2 links for each systems - SAT & UAT - - capture & attach screenshots
+        - check for emails attached as artefacts - - capture & attach screenshots
+        - Provide a summary comment - both in sub-task & parent tickets
+
+*/
+
+
+
+
+/*await page.goto('https://wikipedia.org')
+
+const englishButton = await page.waitForSelector('#js-link-box-en > strong')
+await englishButton.click()
+
+const searchBox = await page.waitForSelector('#searchInput')
+await searchBox.type('telephone')
+
+await page.keyboard.press('Enter')
+await page.close()
+*/
