@@ -7,19 +7,36 @@ if (tktState) {
     console.log('A--', textContent);
 }
 
-// Leave a comment after script execution
-const editBtn = await page.waitForSelector('#footer-comment-button')
-await editBtn.click()
-// const commentTextBtn = await page.waitForSelector('#comment-wiki-edit > nav > div > div > ul > li:nth-child(2) > button')
-const commentVisualBtn = await page.waitForSelector('#comment-wiki-edit > nav > div > div > ul > li.nth-child(1) > button')
-await commentVisualBtn.click()
+/* // Leave a comment after script execution
+const editBtn = await page.waitForSelector('#edit-issue');
+await editBtn.click();
+ */
+
+
+const commentBtn = await page.waitForSelector('#footer-comment-button');
+await commentBtn.click();
+
+const commentTextBtn = await page.waitForSelector('#comment-wiki-edit > nav > div > div > ul > li:last-child > button');
+await commentTextBtn.click();
+
 let comment = `This is a comment:
 - Checked following things & Dates
 - Observations - some remarks
 - Do this
 - Also Do this
+Red {color:red}color{color}. *Bold*. _Italic_. +Underline+
 `;
+const commentTextBox = await page.waitForSelector('#comment');
+await commentTextBox.type(comment);
+// await commentTextBox.text(comment);
 
+const commentVisualBtn = await page.waitForSelector('#comment-wiki-edit > nav > div > div > ul > li:first-child > button');
+await commentVisualBtn.click();
+
+// console.log('F--');
+const commentSave = await page.waitForSelector('#issue-comment-add-submit');
+await commentSave.click();
+// console.log('G--');
 
 /*
 Check that it is a valid page - 
