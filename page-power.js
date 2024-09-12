@@ -164,7 +164,7 @@ var ppLib = {
 							if (colKey == 'Summary' && colVal.indexOf('XXXX') > -1) {
 								$(i).addClass('error');
 							}
-							if (colKey == 'Portfolio') {
+							if (colKey == 'LeadITPortfolio') {
 								if (!colVal) $(i).addClass('error');
 								if (colVal.indexOf('<PORTFOLIO') > -1) $(i).addClass('error');
 							}
