@@ -183,11 +183,13 @@ var ppLib = {
 						// 	rowData[tab[idx+1]] = [];
 						// }
 						// rowData[tab[idx+1]].push(tempObj);
-						let tabTey = obj.parentElement.parentElement.parentElement.parentElement.parentElement.id;
-						if (!rowData[tabTey]) {
-							rowData[tabTey] = [];
+						let tabKey = obj.parentElement.parentElement.parentElement.parentElement.parentElement.id;
+						if(tabKey.indexOf('table') > -1) 
+							tabKey = obj.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.id;
+						if(!rowData[tabKey]){
+							rowData[tabKey] = [];
 						}
-						rowData[tabTey].push(tempObj);
+						rowData[tabKey].push(tempObj);
 					}
 				}
 				rowCount++;
