@@ -376,3 +376,19 @@ span.rpt-sys-pill.active {
     margin-top: 40px;
     border-radius: 10px;
 }
+
+.test-btn {
+    width: 100px;
+    height: 25px;
+    background: cyan;
+    line-height: 25px;
+    text-align: center;
+    border: 1px solid rgb(90, 63, 63);
+    border-radius: 5px;
+    cursor: pointer;
+    position: fixed;
+    top: 7px;
+    z-index: 38;
+    right: 385px;
+}
+

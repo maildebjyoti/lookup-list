@@ -84,6 +84,10 @@ var ppLib = {
 		ppLib.hideGraph();
 		$('.graph-container .close-btn').on('click', ppLib.hideGraph);
 
+		$('#main-content').after('<div class="test-btn">Test</div>');
+		$('#main-content').after('<div id="testlink"></div>');
+		$('.test-btn').on('click', ppLib.newTestFeature); //New Feature Test
+
 		console.log('Page-power: init function');
 
 		setTimeout(() => {
@@ -612,5 +616,31 @@ var ppLib = {
 		dataSet.forEach((item) => {
 			console.log(item.Key, item.LinkedCOs)
 		})
-	}
+	},
+	getD2details: function () {
+		console.log('D2 test');
+		// Open a new window
+		let newWindow = window.open('https://edpapp.corp.hkjc.com:8243/D2/?docbase=EDPITDS&locateId=0901b2088029731b', '_blank');
+		try {
+			// Wait for the new window to load
+			newWindow.onload = () => {
+				alert('hi there');
+				// Extract a specific element (e.g., the page title)
+				const title = newWindow.document.title; // You can also use other selectors
+
+				// Send the extracted title back to the parent window
+				document.getElementById('testlink').innerText = 'Extracted Title: ' + title;
+
+				// Optional: Close the new window after extracting the information
+				//newWindow.close();
+			};
+		} catch (e) { console.log(e); }
+
+	},
+	newTestFeature: function () {
+		console.log('New test feature');
+		try {
+			console.log('New test feature - Try block');
+		} catch (e) { console.log('New test feature - Error block', e); }
+	},
 };
