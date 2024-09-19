@@ -28,7 +28,7 @@ loadPagePower();
 async function loadDependencies() {
 	try {
 		// Load dependencies in parallel
-		const [d3Js, plotJs, runtimeJs] = await Promise.all([
+		const [d3Js, plotJs] = await Promise.all([
 			fetch('https://cdn.jsdelivr.net/npm/d3@7').then((res) => res.text()),
 			fetch('https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6').then((res) => res.text())
 		]);
@@ -150,7 +150,7 @@ var ppLib = {
 											? `<span class="sys-pill">${system}</span>`
 											: `<span class="sys-pill error">${system}</span>`;
 									});
-									tempHtml = tempHtml.join('');
+									tempHtml = tempHtml.join(' ');
 									i.innerHTML = tempHtml;
 								}
 
@@ -640,9 +640,75 @@ var ppLib = {
 
 	},
 	newTestFeature: function () {
-		console.log('New test feature');
 		try {
 			console.log('New test feature - Try block');
+			if(rowData.hasOwnProperty('software')){
+				console.log('Software Items:', rowData.software);
+				
+				//https://kmc.corp.hkjc.com/rest/api/latest/issue/${rgb}?fields=summary,description,customfield_23930,customfield_24005,customfield_24205,customfield_23931,customfield_23934,customfield_23935
+				/*
+				summary --> title
+				description
+				customfield_23930 - Business Function/Feature Change Desc
+	
+				customfield_24005 - Release scope per system
+				
+				customfield_24205 - Confirm Business Function Section Completed (Dropdown)
+				customfield_23931 - Involved Business Domain (Dropdown)
+				customfield_23934 - Related Business Events 
+				customfield_23935 - Business Program
+				*/
+				let rgbs = rowData.software.map((item)=>item.Key);
+				let rgbUrls = rowData.software.map((item)=> `https://kmc.corp.hkjc.com/rest/api/latest/issue/${item.Key}?fields=summary,description,customfield_23930,customfield_24005,customfield_24205,customfield_23931,customfield_23934,customfield_23935`);
+				// const rgbResponses = await Promise.all(rgbUrls.map((url)=>fetch(url)));
+				//JIRA-REST-TOKEN:NjYyNzQyNjA1NzAxOgPloe4HhvmulnbRwSwcnCAzWs6C
+			
+
+				/*// Function to fetch data from a URL with authorization cookie
+				async function fetchDataWithAuth(url) {
+				    const response = await fetch(url, {
+				        method: 'GET',
+				        mode: 'no-cors',
+				        credentials: 'include', // Include cookies in the request
+				        headers: {
+				            'Authorization': 'Bearer NjYyNzQyNjA1NzAxOgPloe4HhvmulnbRwSwcnCAzWs6C', 
+				            'Content-Type': 'application/json'
+				        }
+				    });
+				
+				    if (!response.ok) {
+				        throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+				    }
+				    return await response.json(); // Assuming the response is in JSON format
+				}
+				
+
+			    try {
+			        const dataPromises = rgbUrls.map(url => fetchDataWithAuth(url));
+			        const allData = await Promise.all(dataPromises);
+			        console.log('Fetched Data:', allData);
+			    } catch (error) {
+			        console.error('Error fetching data:', error);
+			    }*/
+				
+				console.log('--AB--');
+				let newWindow = window.open('https://kmc.corp.hkjc.com/secure/Dashboard.jspa?otherdata='+rgbs.join('|'), '_blank');
+				console.log('--AB--', 'hi there', newWindow);
+				try {
+					// Wait for the new window to load
+					newWindow.onload = () => {
+						
+						// Extract a specific element (e.g., the page title)
+						const title = newWindow.document.title; // You can also use other selectors
+		
+						// Send the extracted title back to the parent window
+						document.getElementById('testlink').innerText = 'Extracted Title: ' + title;
+						console.log('--AB--', 'Extracted Title: ' + title);
+						// Optional: Close the new window after extracting the information
+						//newWindow.close();
+					};
+				} catch (e) { console.log('Error: 123 >>', e); }
+			}
 		} catch (e) { console.log('New test feature - Error block', e); }
 	},
 };
