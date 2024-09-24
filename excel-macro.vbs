@@ -197,3 +197,146 @@ Function HelperPadWithSpaces(str As String, length As Integer) As String
         HelperPadWithSpaces = Left(str, length) ' Truncate if longer than specified length
     End If
 End Function
+
+
+
+'----------------------------------------------------------------------------------
+Sub SendEmailReportWithChart()
+    Dim OutlookApp As Object
+    Dim OutlookMail As Object
+    Dim EmailBody As String
+    Dim EmailTo As String
+    Dim EmailSubject As String
+    Dim rng As Range
+    Dim ChartObject As ChartObject
+    Dim ChartImagePath As String
+
+    ' Set the range to include in the email body (change as needed)
+    Set rng = ThisWorkbook.Sheets("Sheet1").Range("B1:G30") ' Adjust the range
+
+    ' Prepare the email content
+    EmailTo = "debjyoti.acharjee@hkjc.org.hk" ' Change to the recipient's email address
+    EmailSubject = "Monthly Report with Chart"
+    EmailBody = "Hello," & vbCrLf & vbCrLf & _
+                "Please find the report below:" & vbCrLf & vbCrLf & _
+                RangeToText(rng) & vbCrLf & vbCrLf & _
+                "Best regards," & vbCrLf & _
+                "RGB Reports" ' Customize as needed
+
+'    ' Create Chart Image
+'    Set ChartObject = ThisWorkbook.Sheets("Sheet1").ChartObjects(1) ' Adjust index or name as needed
+'    ChartImagePath = ThisWorkbook.Path & "\ChartImage.png" ' Path to save the chart image
+'
+'    ' Export the chart as an image
+'    ChartObject.Chart.Export Filename:=ChartImagePath, FilterName:="PNG"
+
+    ' Create Outlook application and email object
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Set OutlookMail = OutlookApp.CreateItem(0) ' 0 for mail item
+
+    ' Set email properties
+    With OutlookMail
+        .To = EmailTo
+        .Subject = EmailSubject
+        .Body = EmailBody
+        '.Attachments.Add ChartImagePath ' Attach the chart image
+        .Display ' Use .Send to send directly without displaying
+    End With
+
+    ' Clean up
+    Set OutlookMail = Nothing
+    Set OutlookApp = Nothing
+
+'    ' Delete the chart image file after sending (optional)
+'    On Error Resume Next
+'    Kill ChartImagePath
+'    On Error GoTo 0
+End Sub
+
+Sub SendEmailReportWithHTML()
+    Dim OutlookApp As Object
+    Dim OutlookMail As Object
+    Dim EmailBody As String
+    Dim EmailTo As String
+    Dim EmailSubject As String
+    Dim rng As Range
+    Dim ChartObject As ChartObject
+    Dim ChartImagePath As String
+
+    ' Set the range to include in the email body (B1:G30)
+    Set rng = ThisWorkbook.Sheets("Sheet1").Range("B1:G30") ' Adjusted range
+
+    ' Prepare the email content
+    EmailTo = "debjyoti.acharjee@hkjc.org.hk" ' Change to the recipient's email address
+    EmailSubject = "Monthly Report with Chart"
+    
+    ' Convert the range to HTML
+    EmailBody = "<html><body>"
+    EmailBody = EmailBody & "<p>Hello,</p>"
+    EmailBody = EmailBody & "<p>Please find the report below:</p>"
+    EmailBody = EmailBody & RangeToHTML(rng)
+    EmailBody = EmailBody & "<p>Best regards,<br>Your Name</p>"
+    EmailBody = EmailBody & "</body></html>"
+
+    ' Create Outlook application and email object
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Set OutlookMail = OutlookApp.CreateItem(0) ' 0 for mail item
+
+    ' Set email properties
+    With OutlookMail
+        .To = EmailTo
+        .Subject = EmailSubject
+        .HTMLBody = EmailBody ' Set the HTML body
+        .Display ' Use .Send to send directly without displaying
+    End With
+
+    ' Clean up
+    Set OutlookMail = Nothing
+    Set OutlookApp = Nothing
+End Sub
+
+Function RangeToText(rng As Range) As String
+    Dim cell As Range
+    Dim reportText As String
+    
+    ' Convert the range to text format
+    reportText = ""
+    For Each cell In rng
+        reportText = reportText & cell.Value & vbTab ' Use tab for spacing
+        If cell.Column = rng.Columns.Count Then
+            reportText = reportText & vbCrLf ' New line at the end of each row
+        End If
+    Next cell
+    
+    RangeToText = reportText
+End Function
+
+Function RangeToHTML(rng As Range) As String
+    Dim fCell As Range
+    Dim html As String
+    Dim rowCount As Long
+    Dim colCount As Long
+    Dim r As Long
+    Dim c As Long
+    
+    rowCount = rng.Rows.Count
+    colCount = rng.Columns.Count
+
+    ' Start the HTML table
+    html = "<table border='1' style='border-collapse:collapse;'>"
+    
+    ' Loop through each row and column
+    For r = 1 To rowCount
+        html = html & "<tr>"
+        For c = 1 To colCount
+            Set fCell = rng.Cells(r, c)
+            html = html & "<td style='padding:5px;'>" & fCell.Value & "</td>"
+        Next c
+        html = html & "</tr>"
+    Next r
+    
+    ' End the HTML table
+    html = html & "</table>"
+    
+    RangeToHTML = html
+End Function
