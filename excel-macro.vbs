@@ -199,6 +199,99 @@ Function HelperPadWithSpaces(str As String, length As Integer) As String
 End Function
 
 
+'----------------------------------------------------------------------------------
+'Transform external sheet
+'TODOs:
+' - handle use cases like PRJPRJ2714 & Empty
+Sub TransExternalSheet()
+    Dim wbSource As Workbook
+    Dim wbDest As Workbook
+    Dim filePath As String
+
+    ' Specify the file path of Workbook2.xlsx
+    ' Change this to your file path
+    'filePath = "C:\Users\debjyotiacharjee\Report.xlsx"
+    filePath = "C:\Users\debjyotiacharjee\OneDrive - The Hong Kong Jockey Club\Download\i. RPT - Release Pipeline.xlsx"
+
+    ' Open Workbook2
+    On Error Resume Next
+    Set wbSource = Workbooks.Open(filePath)
+    
+    If wbSource Is Nothing Then
+        MsgBox "Could not open External File. Please check the file path."
+        Exit Sub
+    End If
+
+    ' Perform transformations on Workbook2
+    With wbSource.Sheets(1) ' Change to the correct sheet if necessary
+        
+        ' Find the last row in column H - Status - Safest as this will not be empty
+        Dim lastRow As Long ' Use Long for row numbers
+        lastRow = .Cells(.Rows.Count, "H").End(xlUp).Row
+        
+        ' If lastRow is less than 1, no data is present in column H
+        If lastRow < 1 Then
+            MsgBox "No data found in column H."
+            wbSource.Close False
+            Exit Sub
+        End If
+    
+        Dim i As Long
+        Dim cellValue As String
+        Dim transformedValue As String
+        For i = 2 To lastRow
+            'Project Link - Extract Project Code & Set Color
+            cellValue = .Cells(i, 7).Value
+            transformedValue = ExtractPrjCode(cellValue)
+            .Cells(i, 7).Value = transformedValue
+            .Cells(i, 7).Font.Color = RGB(255, 100, 0)
+        Next i
+
+        'Add Column & Rectify the Portfolio data. Delete/clean-up the columns 3 & 4
+        '' Add a new column before Column B (which is Column 2)
+        '.Columns(2).Insert Shift:=xlToRight
+        'Loop here
+        '.Columns(3).Delete
+        '.Columns(4).Delete
+        
+    End With
+
+    ' Save and close Workbook2
+    wbSource.Save
+    wbSource.Close
+
+    ' Clean up
+    Set wbSource = Nothing
+
+    MsgBox "Transformation completed successfully!"
+End Sub
+
+Function ExtractPrjCode(cellValue As String) As String
+    Dim startPos As Integer
+    Dim endPos As Integer
+    Dim separatorPos As Integer
+
+    ' Check for the presence of "|"
+    separatorPos = InStr(cellValue, "|")
+    
+    If separatorPos = 0 Then
+        ' If "|" is not found, return the original value
+        ExtractPrjCode = cellValue
+    Else
+        ' Find the position of "["
+        startPos = InStr(cellValue, "[")
+        
+        If startPos > 0 Then
+            ' Extract the value between "[" and "|"
+            endPos = separatorPos - 1
+            ExtractPrjCode = Trim(Mid(cellValue, startPos + 1, endPos - startPos))
+        Else
+            ' If "[" is not found, return the original value
+            ExtractPrjCode = cellValue
+        End If
+    End If
+End Function
+
 
 '----------------------------------------------------------------------------------
 Sub SendEmailReportWithChart()
@@ -223,12 +316,12 @@ Sub SendEmailReportWithChart()
                 "Best regards," & vbCrLf & _
                 "RGB Reports" ' Customize as needed
 
-'    ' Create Chart Image
-'    Set ChartObject = ThisWorkbook.Sheets("Sheet1").ChartObjects(1) ' Adjust index or name as needed
-'    ChartImagePath = ThisWorkbook.Path & "\ChartImage.png" ' Path to save the chart image
-'
-'    ' Export the chart as an image
-'    ChartObject.Chart.Export Filename:=ChartImagePath, FilterName:="PNG"
+    ' ' Create Chart Image
+    ' Set ChartObject = ThisWorkbook.Sheets("Sheet1").ChartObjects(1) ' Adjust index or name as needed
+    ' ChartImagePath = ThisWorkbook.Path & "\ChartImage.png" ' Path to save the chart image
+
+    ' ' Export the chart as an image
+    ' ChartObject.Chart.Export Filename:=ChartImagePath, FilterName:="PNG"
 
     ' Create Outlook application and email object
     Set OutlookApp = CreateObject("Outlook.Application")
@@ -247,10 +340,10 @@ Sub SendEmailReportWithChart()
     Set OutlookMail = Nothing
     Set OutlookApp = Nothing
 
-'    ' Delete the chart image file after sending (optional)
-'    On Error Resume Next
-'    Kill ChartImagePath
-'    On Error GoTo 0
+    ' ' Delete the chart image file after sending (optional)
+    ' On Error Resume Next
+    ' Kill ChartImagePath
+    ' On Error GoTo 0
 End Sub
 
 Sub SendEmailReportWithHTML()
