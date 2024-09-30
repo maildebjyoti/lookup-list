@@ -1,9 +1,44 @@
-' Date: 24-Sep-2024
-' Some useful Formulas & Handy Macro Examples
-'
-'
 
+'Dummy test functions to call from Workbook
+Function SplitAndReturnLengths(cell As Range) As String
+    Dim splitValues As Variant
+    Dim lengths As String
+    Dim i As Long
+    
+    ' Split the cell value by commas
+    splitValues = Split(cell.Value, ",")
+    
+    ' Initialize the lengths string
+    lengths = ""
+    
+    ' Loop through each split value and calculate its length
+    For i = LBound(splitValues) To UBound(splitValues)
+        ' Trim whitespace and get length
+        lengths = lengths & Len(Trim(splitValues(i))) & ", "
+    Next i
+    
+    ' Remove the trailing comma and space
+    If Len(lengths) > 0 Then
+        lengths = Left(lengths, Len(lengths) - 2)
+    End If
+    
+    ' Return the lengths as a comma-separated string
+    SplitAndReturnLengths = lengths
+End Function
 
+Function getCriticality(cell As Range) As String
+    Dim wsLookup As Worksheet
+    Set wsLookup = ThisWorkbook.Sheets("System Information")
+    getCriticality = helperGetCriticality(cell.Value, wsLookup)
+End Function
+
+Function getAssetHealth(cell As Range) As String
+    Dim wsLookup As Worksheet
+    Set wsLookup = ThisWorkbook.Sheets("System Information")
+    getAssetHealth = helperGetAssetHealth(cell.Value, wsLookup)
+End Function
+
+'Below procedure converts each comma separated systems into individual rows. Source is "DataCopied" sheet and the transformed data is pasted into "TransformedData" sheet
 Sub TransformData()
     Dim wsSource As Worksheet
     Dim wsTarget As Worksheet
@@ -80,134 +115,18 @@ Sub TransformData()
 End Sub
 
 
-Function SplitAndReturnLengths(cell As Range) As String
-    Dim splitValues As Variant
-    Dim lengths As String
-    Dim i As Long
-    
-    ' Split the cell value by commas
-    splitValues = Split(cell.Value, ",")
-    
-    ' Initialize the lengths string
-    lengths = ""
-    
-    ' Loop through each split value and calculate its length
-    For i = LBound(splitValues) To UBound(splitValues)
-        ' Trim whitespace and get length
-        lengths = lengths & Len(Trim(splitValues(i))) & ", "
-    Next i
-    
-    ' Remove the trailing comma and space
-    If Len(lengths) > 0 Then
-        lengths = Left(lengths, Len(lengths) - 2)
-    End If
-    
-    ' Return the lengths as a comma-separated string
-    SplitAndReturnLengths = lengths
-End Function
-
-
-Function getCriticality(cell As Range) As String
-    Dim splitValues As Variant
-    Dim resultValues As String
-    Dim i As Long
-    Dim wsLookup As Worksheet
-    Dim foundCell As Range
-    
-    ' Set the worksheet to look up values
-    Set wsLookup = ThisWorkbook.Sheets("System Information")
-    
-    ' Split the cell value by commas
-    splitValues = Split(cell.Value, ",")
-    
-    ' Initialize the result values string
-    resultValues = ""
-    
-    ' Loop through each split value
-    For i = LBound(splitValues) To UBound(splitValues)
-        ' Trim whitespace from the current value
-        Dim currentValue As String
-        currentValue = Trim(splitValues(i))
-        
-        ' Check if the current value exists in column B of the lookup sheet
-        Set foundCell = wsLookup.Columns("B").Find(currentValue, LookIn:=xlValues, LookAt:=xlWhole)
-        
-        If Not foundCell Is Nothing Then
-            ' If found, get the corresponding value from column D
-            resultValues = resultValues & HelperPadWithSpaces(currentValue, 10) & " : " & _
-                Trim(wsLookup.Cells(foundCell.Row, "D").Value) & vbCrLf ' & ", "
-        Else
-            resultValues = resultValues & HelperPadWithSpaces("Error", 10) & " : " & currentValue & vbCrLf ' & ", "
-        End If
-    Next i
-    
-    ' Remove the trailing comma and space
-    If Len(resultValues) > 0 Then
-        resultValues = Left(resultValues, Len(resultValues) - 2)
-    End If
-    
-    ' Return the result values as a comma-separated string
-    getCriticality = resultValues
-End Function
-
-Function getAssetHealth(cell As Range) As String
-    Dim splitValues As Variant
-    Dim resultValues As String
-    Dim i As Long
-    Dim wsLookup As Worksheet
-    Dim foundCell As Range
-    
-    ' Set the worksheet to look up values
-    Set wsLookup = ThisWorkbook.Sheets("System Information")
-    
-    ' Split the cell value by commas
-    splitValues = Split(cell.Value, ",")
-    
-    ' Initialize the result values string
-    resultValues = ""
-    
-    ' Loop through each split value
-    For i = LBound(splitValues) To UBound(splitValues)
-        ' Trim whitespace from the current value
-        Dim currentValue As String
-        currentValue = Trim(splitValues(i))
-        
-        ' Check if the current value exists in column B of the lookup sheet
-        Set foundCell = wsLookup.Columns("B").Find(currentValue, LookIn:=xlValues, LookAt:=xlWhole)
-        
-        If Not foundCell Is Nothing Then
-            ' If found, get the corresponding value from column C
-            resultValues = resultValues & HelperPadWithSpaces(currentValue, 10) & " : " & _
-                Trim(wsLookup.Cells(foundCell.Row, "C").Value) & vbCrLf
-        Else
-            ' Handle error condition
-            resultValues = resultValues & HelperPadWithSpaces("Error", 10) & " : " & currentValue & vbCrLf ' & ", "
-        End If
-    Next i
-    
-    ' Return the result values as a string (no need to remove trailing comma)
-    getAssetHealth = resultValues
-End Function
-
-Function HelperPadWithSpaces(str As String, length As Integer) As String
-    ' Pad the string with spaces to the specified length
-    If Len(str) < length Then
-        HelperPadWithSpaces = str & Space(length - Len(str))
-    Else
-        HelperPadWithSpaces = Left(str, length) ' Truncate if longer than specified length
-    End If
-End Function
-
-
-'----------------------------------------------------------------------------------
 'Transform external sheet
-'TODOs:
-' - handle use cases like PRJPRJ2714 & Empty
+
 Sub TransExternalSheet()
     Dim wbSource As Workbook
     Dim wbDest As Workbook
     Dim filePath As String
 
+    Dim wbLookup As Workbook
+    Dim wsLookup As Worksheet
+    Set wbLookup = Workbooks.Open("C:\Users\debjyotiacharjee\OneDrive - The Hong Kong Jockey Club\Download\System information Management.xlsx") '<-- System Information Sheet
+    Set wsLookup = wbLookup.Worksheets("System information Management") '<-- Sheet Name
+    
     ' Specify the file path of Workbook2.xlsx
     ' Change this to your file path
     'filePath = "C:\Users\debjyotiacharjee\Report.xlsx"
@@ -239,34 +158,280 @@ Sub TransExternalSheet()
         Dim i As Long
         Dim cellValue As String
         Dim transformedValue As String
+        Dim cellValueLeadPortfolio, cellValuePortfolio As String
+        
+        ' Set Headers
+        .Cells(1, 24).Value = "Systems Involved" 'Systems Involved - Column X/24
+        .Cells(1, 25).Value = "Criticality" 'Criticality - Column Y/25
+        .Cells(1, 26).Value = "Is Criticality" 'Is Critical - Column Z/26
+        .Cells(1, 27).Value = "Asset Health" 'Asset Health - Column AA/27
+        .Cells(1, 28).Value = "Is Customer Facing" 'Is Customer Facing - Column AB/28
+        .Cells(1, 29).Value = "Is Media Facing" 'Is Media Facing - Column AC/29
+        ' Copy formatting from A1
+        .Cells(1, 1).Copy
+        .Cells(1, 24).PasteSpecial Paste:=xlPasteFormats
+        .Cells(1, 25).PasteSpecial Paste:=xlPasteFormats
+        .Cells(1, 26).PasteSpecial Paste:=xlPasteFormats
+        .Cells(1, 27).PasteSpecial Paste:=xlPasteFormats
+        .Cells(1, 28).PasteSpecial Paste:=xlPasteFormats
+        .Cells(1, 29).PasteSpecial Paste:=xlPasteFormats
+        
+            
         For i = 2 To lastRow
-            'Project Link - Extract Project Code & Set Color
+        
+          'Project Link - Extract Project Code & Set Color - Column G/7
             cellValue = .Cells(i, 7).Value
-            transformedValue = ExtractPrjCode(cellValue)
+            transformedValue = helperExtractPrjCode(cellValue)
             .Cells(i, 7).Value = transformedValue
             .Cells(i, 7).Font.Color = RGB(255, 100, 0)
+            If helperCheckPrjCode(transformedValue) Then
+                .Cells(i, 7).Font.Color = RGB(0, 0, 0)
+                .Cells(i, 7).Interior.Color = RGB(255, 204, 204)
+            End If
+            
+            
+          'Portfolio - Column C/3
+            transformedValue = ""
+            cellValueLeadPortfolio = .Cells(i, 2).Value
+            cellValuePortfolio = .Cells(i, 3).Value
+            If cellValueLeadPortfolio <> Empty Then
+                transformedValue = Trim(cellValueLeadPortfolio)
+            ElseIf cellValuePortfolio = "<Portfolio Name>" Or cellValuePortfolio = "" Then
+                transformedValue = "BLANK-ERROR"
+                .Cells(i, 2).Interior.Color = RGB(255, 204, 204)
+                .Cells(i, 3).Interior.Color = RGB(255, 204, 204)
+            Else
+                transformedValue = Trim(cellValuePortfolio)
+                .Cells(i, 2).Interior.Color = RGB(204, 255, 153)
+            End If
+            .Cells(i, 2).Value = transformedValue 'Lead IT Portfolio
+            .Cells(i, 3).Value = transformedValue 'Portfolio
+            
+          'Individual or Major Release - Column D/4
+            cellValue = .Cells(i, 4).Value
+            If cellValue = "" Then
+                .Cells(i, 4).Value = "Individual Release"
+                .Cells(i, 4).Interior.Color = RGB(204, 255, 153)
+            End If
+            
+            
+          'Systems Involved - Column X/24
+            cellValue = .Cells(i, 10).Value
+            transformedValue = ""
+            transformedValue = helperSplitText(cellValue)
+            .Cells(i, 24).Value = transformedValue
+            .Cells(i, 24).Font.Name = "Consolas"
+            .Cells(i, 24).Font.Size = 9
+            .Cells(i, 24).Interior.Color = RGB(255, 204, 204)
+            
+            
+          'Criticality - Column Y/25
+            cellValue = .Cells(i, 10).Value
+            transformedValue = ""
+            transformedValue = helperGetCriticality(cellValue, wsLookup)
+            .Cells(i, 25).Value = transformedValue
+            .Cells(i, 25).Font.Name = "Consolas"
+            .Cells(i, 25).Font.Size = 9
+            .Cells(i, 25).Interior.Color = RGB(204, 255, 153)
+            If InStr(1, transformedValue, "Error", vbTextCompare) > 0 Then
+                .Cells(i, 25).Interior.Color = RGB(255, 204, 204)
+            End If
+            
+    
+          'Is Critical - Column Z/26
+            transformedValue = helperIsCritical(transformedValue)
+            .Cells(i, 26).Value = transformedValue
+            If transformedValue Then
+                .Cells(i, 26).Interior.Color = RGB(255, 204, 204)
+            End If
+            
+            
+          'Asset Health - Column AA/27
+            cellValue = .Cells(i, 10).Value
+            transformedValue = ""
+            transformedValue = helperGetAssetHealth(cellValue, wsLookup)
+            .Cells(i, 27).Value = transformedValue
+            .Cells(i, 27).Font.Name = "Consolas"
+            .Cells(i, 27).Font.Size = 9
+            .Cells(i, 27).Interior.Color = RGB(204, 255, 153)
+            If InStr(1, transformedValue, "Error", vbTextCompare) > 0 Then
+                .Cells(i, 27).Interior.Color = RGB(255, 204, 204)
+            End If
+            
+            
+          'Is Customer Facing - Column AB/28
+            .Cells(i, 28).Value = helperIsCustomerFacing(transformedValue)
+            If .Cells(i, 28).Value Then
+                .Cells(i, 28).Interior.Color = RGB(255, 204, 204)
+            End If
+            
+            
+          'Is Media Facing - Column AC/29
+            .Cells(i, 29).Value = helperIsMediaFacing(transformedValue)
+            If .Cells(i, 29).Value Then
+                .Cells(i, 29).Interior.Color = RGB(255, 204, 204)
+            End If
+            
+            
         Next i
-
-        'Add Column & Rectify the Portfolio data. Delete/clean-up the columns 3 & 4
-        '' Add a new column before Column B (which is Column 2)
-        '.Columns(2).Insert Shift:=xlToRight
-        'Loop here
-        '.Columns(3).Delete
-        '.Columns(4).Delete
         
+        'Delete & clean-up the "Lead IT Portfolio" column
+        '.Columns(2).Delete
+        
+        'Delete the last 3 rows
+        .Rows(lastRow + 1 & ":" & lastRow + 3).Delete
     End With
 
-    ' Save and close Workbook2
+    ' Save and close Workbook
     wbSource.Save
     wbSource.Close
 
     ' Clean up
     Set wbSource = Nothing
+    Set wbLookup = Nothing
+    Set wsLookup = Nothing
 
     MsgBox "Transformation completed successfully!"
 End Sub
 
-Function ExtractPrjCode(cellValue As String) As String
+Function helperGetCriticality(cellValue As String, wsLookup As Worksheet) As String
+    Dim splitValues As Variant
+    Dim resultValues As String
+    Dim i As Long
+    Dim foundCell As Range
+
+    ' Split the cell value by commas
+    splitValues = Split(cellValue, ",")
+
+    ' Initialize the result values string
+    resultValues = ""
+
+    ' Loop through each split value
+    For i = LBound(splitValues) To UBound(splitValues)
+        ' Trim whitespace from the current value
+        Dim currentValue As String
+        currentValue = Trim(splitValues(i))
+
+        ' Check if the current value exists in column B of the lookup sheet
+        Set foundCell = wsLookup.Columns("B").Find(currentValue, LookIn:=xlValues, LookAt:=xlWhole)
+
+        If Not foundCell Is Nothing Then
+            ' If found, get the corresponding value from column D
+            resultValues = resultValues & helperPadWithSpaces(currentValue, 10) & " : " & _
+                Trim(wsLookup.Cells(foundCell.Row, "D").Value) & vbCrLf
+        Else
+            resultValues = resultValues & helperPadWithSpaces("Error", 10) & " : " & currentValue & vbCrLf
+        End If
+    Next i
+
+    ' Remove the trailing newline
+    If Len(resultValues) > 0 Then
+        resultValues = Left(resultValues, Len(resultValues) - 2)
+    End If
+
+    helperGetCriticality = resultValues
+End Function
+
+Function helperGetAssetHealth(cellValue As String, wsLookup As Worksheet) As String
+    Dim splitValues As Variant
+    Dim resultValues As String
+    Dim i As Long
+    Dim foundCell As Range
+
+    ' Split the cell value by commas
+    splitValues = Split(cellValue, ",")
+
+    ' Initialize the result values string
+    resultValues = ""
+
+    ' Loop through each split value
+    For i = LBound(splitValues) To UBound(splitValues)
+        ' Trim whitespace from the current value
+        Dim currentValue As String
+        currentValue = Trim(splitValues(i))
+
+        ' Check if the current value exists in column B of the lookup sheet
+        Set foundCell = wsLookup.Columns("B").Find(currentValue, LookIn:=xlValues, LookAt:=xlWhole)
+
+        If Not foundCell Is Nothing Then
+            ' If found, get the corresponding value from column C
+            resultValues = resultValues & helperPadWithSpaces(currentValue, 10) & " : " & _
+                Trim(wsLookup.Cells(foundCell.Row, "C").Value) & vbCrLf
+        Else
+            resultValues = resultValues & helperPadWithSpaces("Error", 10) & " : " & currentValue & vbCrLf
+        End If
+    Next i
+
+    ' Remove the trailing newline
+    If Len(resultValues) > 0 Then
+        resultValues = Left(resultValues, Len(resultValues) - 2)
+    End If
+
+    helperGetAssetHealth = resultValues
+End Function
+
+Function helperPadWithSpaces(str As String, length As Integer) As String
+    ' Pad the string with spaces to the specified length
+    If Len(str) < length Then
+        helperPadWithSpaces = str & Space(length - Len(str))
+    Else
+        helperPadWithSpaces = Left(str, length) ' Truncate if longer than specified length
+    End If
+End Function
+
+Function helperSplitText(cellValue As String) As String
+    Dim splitValues As Variant
+    Dim resultValues As String
+    Dim i As Long
+
+    splitValues = Split(cellValue, ",")
+    
+    ' Initialize the result values string
+    resultValues = ""
+    
+    ' Loop through each split value
+    For i = LBound(splitValues) To UBound(splitValues)
+        ' Trim whitespace from the current value
+        Dim currentValue As String
+        currentValue = Trim(splitValues(i))
+        resultValues = resultValues & currentValue & ", " & vbCrLf
+    Next i
+    
+    helperSplitText = resultValues
+End Function
+
+Function helperCheckPrjCode(inputString As String) As Boolean
+    ' Return True if input is empty
+    If inputString = "" Then
+        helperCheckPrjCode = True
+        Exit Function
+    End If
+
+    ' Return True if input does not contain "prj"
+    If InStr(1, inputString, "prj", vbTextCompare) = 0 Then
+        helperCheckPrjCode = True
+        Exit Function
+    End If
+    
+    helperCheckPrjCode = (InStr(1, inputString, "prjprj", vbTextCompare) > 0) Or _
+                       (InStr(1, inputString, "xxx", vbTextCompare) > 0) Or _
+                       (InStr(1, inputString, "tbd", vbTextCompare) > 0)
+End Function
+
+Function helperIsCritical(inputString As String) As Boolean
+    helperIsCritical = (InStr(1, inputString, "Lifeblood", vbTextCompare) > 0) Or _
+                       (InStr(1, inputString, "Critical", vbTextCompare) > 0)
+End Function
+
+Function helperIsCustomerFacing(inputString As String) As Boolean
+    helperIsCustomerFacing = (InStr(1, inputString, "Customer Facing", vbTextCompare) > 0)
+End Function
+
+Function helperIsMediaFacing(inputString As String) As Boolean
+    helperIsMediaFacing = (InStr(1, inputString, "Media Facing", vbTextCompare) > 0)
+End Function
+
+Function helperExtractPrjCode(cellValue As String) As String
     Dim startPos As Integer
     Dim endPos As Integer
     Dim separatorPos As Integer
@@ -276,7 +441,7 @@ Function ExtractPrjCode(cellValue As String) As String
     
     If separatorPos = 0 Then
         ' If "|" is not found, return the original value
-        ExtractPrjCode = cellValue
+        helperExtractPrjCode = cellValue
     Else
         ' Find the position of "["
         startPos = InStr(cellValue, "[")
@@ -284,10 +449,10 @@ Function ExtractPrjCode(cellValue As String) As String
         If startPos > 0 Then
             ' Extract the value between "[" and "|"
             endPos = separatorPos - 1
-            ExtractPrjCode = Trim(Mid(cellValue, startPos + 1, endPos - startPos))
+            helperExtractPrjCode = Trim(Mid(cellValue, startPos + 1, endPos - startPos))
         Else
             ' If "[" is not found, return the original value
-            ExtractPrjCode = cellValue
+            helperExtractPrjCode = cellValue
         End If
     End If
 End Function
@@ -316,12 +481,12 @@ Sub SendEmailReportWithChart()
                 "Best regards," & vbCrLf & _
                 "RGB Reports" ' Customize as needed
 
-    ' ' Create Chart Image
-    ' Set ChartObject = ThisWorkbook.Sheets("Sheet1").ChartObjects(1) ' Adjust index or name as needed
-    ' ChartImagePath = ThisWorkbook.Path & "\ChartImage.png" ' Path to save the chart image
-
-    ' ' Export the chart as an image
-    ' ChartObject.Chart.Export Filename:=ChartImagePath, FilterName:="PNG"
+'    ' Create Chart Image
+'    Set ChartObject = ThisWorkbook.Sheets("Sheet1").ChartObjects(1) ' Adjust index or name as needed
+'    ChartImagePath = ThisWorkbook.Path & "\ChartImage.png" ' Path to save the chart image
+'
+'    ' Export the chart as an image
+'    ChartObject.Chart.Export Filename:=ChartImagePath, FilterName:="PNG"
 
     ' Create Outlook application and email object
     Set OutlookApp = CreateObject("Outlook.Application")
@@ -340,11 +505,27 @@ Sub SendEmailReportWithChart()
     Set OutlookMail = Nothing
     Set OutlookApp = Nothing
 
-    ' ' Delete the chart image file after sending (optional)
-    ' On Error Resume Next
-    ' Kill ChartImagePath
-    ' On Error GoTo 0
+'    ' Delete the chart image file after sending (optional)
+'    On Error Resume Next
+'    Kill ChartImagePath
+'    On Error GoTo 0
 End Sub
+
+Function RangeToText(rng As Range) As String
+    Dim cell As Range
+    Dim reportText As String
+    
+    ' Convert the range to text format
+    reportText = ""
+    For Each cell In rng
+        reportText = reportText & cell.Value & vbTab ' Use tab for spacing
+        If cell.Column = rng.Columns.Count Then
+            reportText = reportText & vbCrLf ' New line at the end of each row
+        End If
+    Next cell
+    
+    RangeToText = reportText
+End Function
 
 Sub SendEmailReportWithHTML()
     Dim OutlookApp As Object
@@ -388,22 +569,6 @@ Sub SendEmailReportWithHTML()
     Set OutlookApp = Nothing
 End Sub
 
-Function RangeToText(rng As Range) As String
-    Dim cell As Range
-    Dim reportText As String
-    
-    ' Convert the range to text format
-    reportText = ""
-    For Each cell In rng
-        reportText = reportText & cell.Value & vbTab ' Use tab for spacing
-        If cell.Column = rng.Columns.Count Then
-            reportText = reportText & vbCrLf ' New line at the end of each row
-        End If
-    Next cell
-    
-    RangeToText = reportText
-End Function
-
 Function RangeToHTML(rng As Range) As String
     Dim fCell As Range
     Dim html As String
@@ -433,3 +598,4 @@ Function RangeToHTML(rng As Range) As String
     
     RangeToHTML = html
 End Function
+
