@@ -1,3 +1,6 @@
+'DOS Command
+'del "i. RPT - Release Pipeline.xlsx" && copy "i. RPT - Release Pipeline - Copy.xlsx" "i. RPT - Release Pipeline.xlsx"
+
 
 'Dummy test functions to call from Workbook
 Function SplitAndReturnLengths(cell As Range) As String
