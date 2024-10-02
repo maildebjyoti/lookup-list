@@ -518,14 +518,53 @@ Function CreatePivotTable(ByRef wb As Workbook)
         .RowGrand = False
         
         ' Turn off Subtotals
+        Dim pvtFld As PivotField
         For Each pvtFld In .PivotFields
-            pvtFld.Subtotals(1) = True
-            pvtFld.Subtotals(1) = False
+            pvtFld.Subtotals(1) = False ' Turn off the first subtotal
         Next pvtFld
-    
+        
+        ' Refresh the Pivot Table
+        .RefreshTable
     End With
     
+    ' Default selections for the column field
+    Dim concatenatedWeeks As String
+    concatenatedWeeks = GetReportingWeeks
+
+    Dim pvtItem As PivotItem
+    For Each pvtItem In pivotTable.PivotFields("Report Week").PivotItems
+        If InStr(concatenatedWeeks, pvtItem) > 0 Then
+            pvtItem.Visible = True
+        Else
+            pvtItem.Visible = False
+        End If
+    Next pvtItem
+    
+    ' Show only the selected weeks
+    For i = LBound(selectedWeeks) To UBound(selectedWeeks)
+        On Error Resume Next ' Ignore errors if the item is not found
+        pivotTable.PivotFields("Report Week").PivotItems(selectedWeeks(i)).Visible = True
+        On Error GoTo 0 ' Resume normal error handling
+    Next i
+
     ' Optional: Format the Pivot Table
     wsPivot.Columns.AutoFit
+    MsgBox "Pivot Table created successfully!"
 End Function
 
+Function GetReportingWeeks() As String
+    Dim baseDate As Date
+    Dim w1 As String, w2 As String, w3 As String, w4 As String
+    
+    ' Use today's date if baseDate is not provided
+    baseDate = Date
+    
+    ' Calculate the week strings
+    w1 = helperGetWeekOf(baseDate - 7)
+    w2 = helperGetWeekOf(baseDate)
+    w3 = helperGetWeekOf(baseDate + 7)
+    w4 = helperGetWeekOf(baseDate + 14)
+    
+    ' Return the concatenated string of week dates
+    GetReportingWeeks = w1 & ";" & w2 & ";" & w3 & ";" & w4
+End Function
