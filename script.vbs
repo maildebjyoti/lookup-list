@@ -1,5 +1,5 @@
 'DOS Command
-'C:\Users\debjyotiacharjee\OneDrive - The Hong Kong Jockey Club\Download>del "i. RPT - Release Pipeline.xlsx" && copy "i.RPT - Release Pipeline - Copy.xlsx" "i. RPT - Release Pipeline.xlsx"
+'del "i. RPT - Release Pipeline.xlsx" && copy "i. RPT - Release Pipeline - Copy.xlsx" "i. RPT - Release Pipeline.xlsx"
 
 
 ' Create an Excel Application
