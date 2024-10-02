@@ -1,4 +1,120 @@
 
+'Dummy test functions to call from Workbook
+Function SplitAndReturnLengths(cell As Range) As String
+    Dim splitValues As Variant
+    Dim lengths As String
+    Dim i As Long
+    
+    ' Split the cell value by commas
+    splitValues = Split(cell.Value, ",")
+    
+    ' Initialize the lengths string
+    lengths = ""
+    
+    ' Loop through each split value and calculate its length
+    For i = LBound(splitValues) To UBound(splitValues)
+        ' Trim whitespace and get length
+        lengths = lengths & Len(Trim(splitValues(i))) & ", "
+    Next i
+    
+    ' Remove the trailing comma and space
+    If Len(lengths) > 0 Then
+        lengths = Left(lengths, Len(lengths) - 2)
+    End If
+    
+    ' Return the lengths as a comma-separated string
+    SplitAndReturnLengths = lengths
+End Function
+
+Function getCriticality(cell As Range) As String
+    Dim wsLookup As Worksheet
+    Set wsLookup = ThisWorkbook.Sheets("System Information")
+    getCriticality = helperGetCriticality(cell.Value, wsLookup)
+End Function
+
+Function getAssetHealth(cell As Range) As String
+    Dim wsLookup As Worksheet
+    Set wsLookup = ThisWorkbook.Sheets("System Information")
+    getAssetHealth = helperGetAssetHealth(cell.Value, wsLookup)
+End Function
+
+'Below procedure converts each comma separated systems into individual rows. Source is "DataCopied" sheet and the transformed data is pasted into "TransformedData" sheet
+Sub TransformData()
+    Dim wsSource As Worksheet
+    Dim wsTarget As Worksheet
+    Dim lastRow As Long
+    Dim i As Long, j As Long
+    Dim labels As Variant
+    Dim currentRow As Long
+
+    ' Set the source worksheet (where your data is)
+    Set wsSource = ThisWorkbook.Sheets("DataCopied") ' Adjust to your source sheet index or name
+    
+    ' Create or clear the target worksheet
+    On Error Resume Next
+    Set wsTarget = ThisWorkbook.Sheets("TransformedData")
+    On Error GoTo 0
+    
+    If wsTarget Is Nothing Then
+        Set wsTarget = ThisWorkbook.Sheets.Add
+        wsTarget.Name = "TransformedData"
+    Else
+        wsTarget.Cells.Clear ' Clear existing data
+    End If
+
+    ' Set the header row in the target sheet - Adjust as needed for other columns
+    wsTarget.Range("A1").Value = "Release Type"
+    wsTarget.Range("B1").Value = "Year"
+    wsTarget.Range("C1").Value = "CO Start Date"
+    wsTarget.Range("D1").Value = "Status"
+    wsTarget.Range("E1").Value = "RGB"
+    wsTarget.Range("F1").Value = "Project Code"
+    wsTarget.Range("G1").Value = "Summary"
+    wsTarget.Range("H1").Value = "Systems"
+    wsTarget.Range("I1").Value = "Criticality"  '=TRIM(IFNA(VLOOKUP(H2, 'System Information'!B:H,3, FALSE), "ERROR"))
+    wsTarget.Range("J1").Value = "Asset Health" '=TRIM(IFNA(VLOOKUP(H2, 'System Information'!B:H,2, FALSE), "ERROR"))
+    wsTarget.Range("K1").Value = "Department"   '=TRIM(IFNA(VLOOKUP(H2, 'System Information'!B:H,6, FALSE), "ERROR"))
+    wsTarget.Range("L1").Value = "Portfolio"    '=TRIM(IFNA(VLOOKUP(H2, 'System Information'!B:H,7, FALSE), "ERROR"))
+
+    ' Find the last row in column A
+    lastRow = wsSource.Cells(wsSource.Rows.Count, "A").End(xlUp).Row
+
+    currentRow = 2 ' Start inserting data from row 2
+
+    ' Loop through each row in the source sheet
+    For i = 2 To lastRow ' Assuming headers are in row 1
+        ' Split the comma-separated values in column H
+        labels = Split(wsSource.Cells(i, "H").Value, ",")
+        
+        ' Loop through each label and create a new row in the target sheet
+        For j = LBound(labels) To UBound(labels)
+            ' Copy value from Column A - G
+            wsTarget.Cells(currentRow, 1).Value = wsSource.Cells(i, 1).Value
+            wsTarget.Cells(currentRow, 2).Value = wsSource.Cells(i, 2).Value
+            wsTarget.Cells(currentRow, 3).Value = wsSource.Cells(i, 3).Value
+            wsTarget.Cells(currentRow, 4).Value = wsSource.Cells(i, 4).Value
+            wsTarget.Cells(currentRow, 5).Value = wsSource.Cells(i, 5).Value
+            wsTarget.Cells(currentRow, 6).Value = wsSource.Cells(i, 6).Value
+            wsTarget.Cells(currentRow, 7).Value = wsSource.Cells(i, 7).Value
+            
+            wsTarget.Cells(currentRow, 8).Value = Trim(labels(j)) ' Copy label from Column H
+            
+            wsTarget.Cells(currentRow, 9).Formula = "=TRIM(IFNA(VLOOKUP(H" & currentRow & ", 'System Information'!B:H,3, FALSE), ""ERROR""))"
+            wsTarget.Cells(currentRow, 10).Formula = "=TRIM(IFNA(VLOOKUP(H" & currentRow & ", 'System Information'!B:H,2, FALSE), ""ERROR""))"
+            wsTarget.Cells(currentRow, 11).Formula = "=TRIM(IFNA(VLOOKUP(H" & currentRow & ", 'System Information'!B:H,6, FALSE), ""ERROR""))"
+            wsTarget.Cells(currentRow, 12).Formula = "=TRIM(IFNA(VLOOKUP(H" & currentRow & ", 'System Information'!B:H,7, FALSE), ""ERROR""))"
+            
+            currentRow = currentRow + 1
+        Next j
+    Next i
+
+    ' Autofit the columns in the target sheet
+    wsTarget.Columns.AutoFit
+    
+    MsgBox "Data has been transformed successfully!", vbInformation
+End Sub
+
+
 'Transform external sheet
 Sub TransExternalSheet()
     Dim wbSource As Workbook
@@ -38,6 +154,8 @@ Sub TransExternalSheet()
         .Cells(1, 27).Value = "Asset Health" 'Asset Health - Column AA/27
         .Cells(1, 28).Value = "Is Customer Facing" 'Is Customer Facing - Column AB/28
         .Cells(1, 29).Value = "Is Media Facing" 'Is Media Facing - Column AC/29
+        .Cells(1, 30).Value = "Mapped Status" 'For Report - Column AD/30
+        .Cells(1, 31).Value = "Report Week" 'For Report Week - Column AE/31
         
         ' Copy formatting from A1
         .Cells(1, 1).Copy
@@ -47,6 +165,8 @@ Sub TransExternalSheet()
         .Cells(1, 27).PasteSpecial Paste:=xlPasteFormats
         .Cells(1, 28).PasteSpecial Paste:=xlPasteFormats
         .Cells(1, 29).PasteSpecial Paste:=xlPasteFormats
+        .Cells(1, 30).PasteSpecial Paste:=xlPasteFormats
+        .Cells(1, 31).PasteSpecial Paste:=xlPasteFormats
         
         ' Initialize row counter
         i = 2 ' Start from the second row
@@ -86,6 +206,28 @@ Sub TransExternalSheet()
             If cellValue = "" Then
                 .Cells(i, 4).Value = "Individual Release"
                 .Cells(i, 4).Interior.Color = RGB(204, 255, 153)
+            End If
+            
+          'Modify Status - Column AD/30
+            cellValue = .Cells(i, 8).Value 'Get current status form Column H/8
+            If cellValue <> "" Then
+                Select Case Trim(UCase(cellValue))
+                    Case "DRAFT"
+                        transformedValue = "1.DFT"
+                    Case "REGISTERED"
+                        transformedValue = "2.REG"
+                    Case "SCHEDULED"
+                        transformedValue = "3.SCH"
+                    'Both RGB Approved and Readiness Reviewed map to the same status
+                    Case "RGB APPROVED"
+                        transformedValue = "4.RDY"
+                    Case "READINESS REVIEWED"
+                        transformedValue = "4.RDY"
+                    'Error case
+                    Case Else
+                        transformedValue = "1.DFT"
+                End Select
+                .Cells(i, 30).Value = transformedValue
             End If
             
           'Systems Involved - Column X/24
@@ -136,6 +278,9 @@ Sub TransExternalSheet()
             If .Cells(i, 29).Value Then
                 .Cells(i, 29).Interior.Color = RGB(255, 204, 204)
             End If
+
+          'WeekOf - Column AE/31
+            .Cells(i, 31).Value = helperGetWeekOf(CDate(.Cells(i, 14).Value))
             
             i = i + 1
         Wend
@@ -290,6 +435,14 @@ End Function
 
 Function helperIsMediaFacing(inputString As String) As Boolean
     helperIsMediaFacing = (InStr(1, inputString, "Media Facing", vbTextCompare) > 0)
+End Function
+
+Function helperGetWeekOf(inputDate As Date) As String
+    Dim lastMonday As Date
+    Dim result As String
+    lastMonday = inputDate - Weekday(inputDate, vbMonday) + 1
+    result = "Wk - " & Format(lastMonday, "YYYY-MM-DD")
+    helperGetWeekOf = result
 End Function
 
 Function helperExtractPrjCode(cellValue As String) As String
