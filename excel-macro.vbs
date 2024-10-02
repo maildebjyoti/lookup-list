@@ -1,6 +1,3 @@
-'DOS Command
-'del "i. RPT - Release Pipeline.xlsx" && copy "i. RPT - Release Pipeline - Copy.xlsx" "i. RPT - Release Pipeline.xlsx"
-
 
 'Dummy test functions to call from Workbook
 Function SplitAndReturnLengths(cell As Range) As String
@@ -153,7 +150,7 @@ Sub TransExternalSheet()
         ' Set Headers
         .Cells(1, 24).Value = "Systems Involved" 'Systems Involved - Column X/24
         .Cells(1, 25).Value = "Criticality" 'Criticality - Column Y/25
-        .Cells(1, 26).Value = "Is Criticality" 'Is Critical - Column Z/26
+        .Cells(1, 26).Value = "Is Critical" 'Is Critical - Column Z/26
         .Cells(1, 27).Value = "Asset Health" 'Asset Health - Column AA/27
         .Cells(1, 28).Value = "Is Customer Facing" 'Is Customer Facing - Column AB/28
         .Cells(1, 29).Value = "Is Media Facing" 'Is Media Facing - Column AC/29
@@ -292,9 +289,13 @@ Sub TransExternalSheet()
         .Rows(i & ":" & i + 3).Delete
     End With
 
+    'Create Pivot Table
+    CreatePivotTable wbSource
+
     ' Save and close Workbook
     wbSource.Save
     wbSource.Close
+    wbLookup.Close
 
     ' Clean up
     Set wbSource = Nothing
@@ -473,3 +474,58 @@ Function helperExtractPrjCode(cellValue As String) As String
         End If
     End If
 End Function
+
+Function CreatePivotTable(ByRef wb As Workbook)
+    Dim wsData As Worksheet
+    Dim wsPivot As Worksheet
+    Dim pivotTable As pivotTable
+    Dim pivotCache As pivotCache
+    Dim dataRange As Range
+    
+    ' Set the data worksheet and create a new worksheet for the Pivot Table
+    Set wsData = wb.Worksheets("Issue Navigator")
+    Set wsPivot = wb.Worksheets.Add
+    wsPivot.Name = "PivotReport"
+    
+    ' Define the range of your data
+    Set dataRange = wsData.Range("'Issue Navigator'!$A:$AE").CurrentRegion ' Adjust as needed
+    
+    ' Create Pivot Cache
+    Set pivotCache = wb.PivotCaches.Create( _
+        SourceType:=xlDatabase, _
+        SourceData:=dataRange)
+    
+    ' Create Pivot Table
+    Set pivotTable = pivotCache.CreatePivotTable( _
+        TableDestination:=wsPivot.Range("A1"), _
+        TableName:="MyPivotTable")
+    
+    ' Set up the Pivot Table
+    With pivotTable
+        .PivotFields("Portfolio").Orientation = xlRowField
+        .PivotFields("Key").Orientation = xlDataField
+        .PivotFields("Report Week").Orientation = xlColumnField
+        .PivotFields("Mapped Status").Orientation = xlColumnField
+        
+        ' Add filters
+        .PivotFields("Is Media Facing").Orientation = xlPageField
+        .PivotFields("Is Customer Facing").Orientation = xlPageField
+        .PivotFields("Is Critical").Orientation = xlPageField
+        .PivotFields("Release Type").Orientation = xlPageField
+        
+        ' Turn off Grand Totals
+        .ColumnGrand = False
+        .RowGrand = False
+        
+        ' Turn off Subtotals
+        For Each pvtFld In .PivotFields
+            pvtFld.Subtotals(1) = True
+            pvtFld.Subtotals(1) = False
+        Next pvtFld
+    
+    End With
+    
+    ' Optional: Format the Pivot Table
+    wsPivot.Columns.AutoFit
+End Function
+
