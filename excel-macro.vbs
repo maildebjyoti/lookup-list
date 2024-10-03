@@ -291,6 +291,7 @@ Sub TransExternalSheet()
 
     'Create Pivot Table
     CreatePivotTable wbSource
+    FormatForReport wbSource
 
     ' Save and close Workbook
     wbSource.Save
@@ -531,6 +532,7 @@ Function CreatePivotTable(ByRef wb As Workbook)
     Dim concatenatedWeeks As String
     concatenatedWeeks = GetReportingWeeks
 
+    ' Show only the selected weeks
     Dim pvtItem As PivotItem
     For Each pvtItem In pivotTable.PivotFields("Report Week").PivotItems
         If InStr(concatenatedWeeks, pvtItem) > 0 Then
@@ -539,17 +541,10 @@ Function CreatePivotTable(ByRef wb As Workbook)
             pvtItem.Visible = False
         End If
     Next pvtItem
-    
-    ' Show only the selected weeks
-    For i = LBound(selectedWeeks) To UBound(selectedWeeks)
-        On Error Resume Next ' Ignore errors if the item is not found
-        pivotTable.PivotFields("Report Week").PivotItems(selectedWeeks(i)).Visible = True
-        On Error GoTo 0 ' Resume normal error handling
-    Next i
 
     ' Optional: Format the Pivot Table
     wsPivot.Columns.AutoFit
-    MsgBox "Pivot Table created successfully!"
+    
 End Function
 
 Function GetReportingWeeks() As String
@@ -567,4 +562,57 @@ Function GetReportingWeeks() As String
     
     ' Return the concatenated string of week dates
     GetReportingWeeks = w1 & ";" & w2 & ";" & w3 & ";" & w4
+End Function
+
+Function FormatForReport(ByRef wb As Workbook)
+    Dim wsSource As Worksheet
+    Dim wsTarget As Worksheet
+    Dim pt As pivotTable
+    Dim targetRange As Range
+
+    ' Set the source worksheet and specify the Pivot Table name
+    Set wsSource = wb.Worksheets("PivotReport") ' Change to your source sheet name
+    Set pt = wsSource.PivotTables("MyPivotTable") ' Change to your Pivot Table name
+    
+    ' Create a new worksheet
+    Set wsTarget = wb.Worksheets.Add
+    wsTarget.Name = "Report"
+
+    ' Specify the target range where you want to paste the data
+    Set targetRange = wsTarget.Range("A1")
+    pt.TableRange2.Copy
+    targetRange.PasteSpecial Paste:=xlPasteValues
+    wsTarget.Columns.AutoFit
+    Application.CutCopyMode = False
+
+    ' Set Filter "Is Critical" as True and copy the data
+    pt.PivotFields("Is Critical").ClearAllFilters ' Clear existing filters
+    pt.PivotFields("Is Critical").CurrentPage = "True" ' Set filter to "True"
+    Set targetRange2 = wsTarget.Range("A" & wsTarget.Cells(wsTarget.Rows.Count, "A").End(xlUp).Row + 2)
+    pt.TableRange2.Copy
+    targetRange2.PasteSpecial Paste:=xlPasteValues
+    wsTarget.Columns.AutoFit
+    Application.CutCopyMode = False
+    
+    ' Notify user
+    MsgBox "Pivot Table data copied to new sheet successfully! "
+End Function
+
+
+Function helperFind3EmptyCells(startCell As Range) As String
+    Dim currentCell As Range
+    Set currentCell = startCell
+    
+    ' Check if the current cell is empty
+    If IsEmpty(currentCell) Then
+        ' Check if the next two cells below are also empty
+        If IsEmpty(currentCell.Offset(1, 0)) And IsEmpty(currentCell.Offset(2, 0)) Then
+            ' Return the address of the first empty cell
+            helperFind3EmptyCells = currentCell.Address
+            Exit Function
+        End If
+    End If
+
+    ' Recursively call the function with the next cell down
+    helperFind3EmptyCells = helperFind3EmptyCells(currentCell.Offset(1, 0))
 End Function
