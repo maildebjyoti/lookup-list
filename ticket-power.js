@@ -7,24 +7,43 @@ var util = {
         url3: 'https://kmc.corp.hkjc.com/rest/api/2/issue/COT-1774',
         systemInfo: '',
         
-        keyJIRA: '',
-        keyCONFLUENCE: ''
+        keyJIRA: '--MTc5NzgwMDM3NjM1Okicd3UJ2dfHvcg/H8juCJOQc4Y4',
+        keyCONFLUENCE: '--MDI3NzY0MjExMjQxOrOYIefGHFjdbN36yj4SovG5+TML'
     },
     init: function () {
         console.log('Ticket-power:v1 init');
         
-        this.formatSystems();
         this.formatCOs();
     },
-    formatSystems: function() {
+    formatSystems: function formatSystems() {
         console.log('Ticket-power:v1 formatSystems');
         let newDiv = document.createElement('div');
-        newDiv.id = 'tempDiv';
-        newDiv.className = 'temp-class';
+        newDiv.id = 'sysDiv';
+        newDiv.className = 'involved-systems';
         newDiv.innerHTML = '';
-        let targetElement = document.getElementById('customfield_16213-val');
-        if (targetElement) {
-            targetElement.parentNode.insertBefore(newDiv, targetElement.nextSibling);
+        let targetElement = document.querySelector('#wrap-labels > div');
+        let sysTargetElement = document.getElementById('customfield_16213-val');
+        let delExistingNode = document.getElementById('sysDiv') ? document.getElementById('sysDiv').remove() : 'No';
+        if (sysTargetElement) {
+            // targetElement.parentNode.insertBefore(newDiv, targetElement.nextSibling);
+            targetElement.appendChild(newDiv);
+            
+            let listedSystems = sysTargetElement.querySelectorAll('ul > li');
+            let tempHtml = '';
+            for(let sys of listedSystems) {
+            	tempHtml += `<span class="sys-pill">${sys.textContent}</span>`;
+            }
+            newDiv.innerHTML = tempHtml;
+            let elems = document.querySelectorAll('#sysDiv > .sys-pill');
+            let elems4mCO = [];
+            document.querySelectorAll('div.link-content > p > span > span > .sys-pill').forEach((elem) => elems4mCO.push(elem.textContent.trim()));
+			elems.forEach((elem)=> {
+				elem.removeEventListener('click', util.getSystemDetails);
+				elem.addEventListener('click', util.getSystemDetails);
+				if(elems4mCO.indexOf(elem.textContent) < 0){
+					elem.classList.add('error');
+				}
+			});
         }
     },
     formatCOs: function() {
@@ -45,23 +64,34 @@ var util = {
             let details = await this.getCOdetails(CO);
 			console.log('Ticket-power:v1 formatIndividualCO-Details', CO, details);
 
-			let coDateCheck1 = details.dateStart == details.dateEnd; //COs must be on same days
+			let coDateCheck = details.dateStart == details.dateEnd; //COs must be on same days
 			
             let newElem = document.createElement('span');
             newElem.className = 'co-details';
             newElem.innerHTML = `<span class="sys-pill">${details.sys}</span>
             					<span class="co-version">${details.version}</span>
             					<span class="co-summary">${details.summary}</span>
-            					<span class="co-dates ${ coDateCheck1 ? '' : 'error' }">${details.dateStart} → ${details.dateEnd}</span>
+            					<span class="co-dates ${ coDateCheck ? '' : 'error' }">${details.dateStart} → ${details.dateEnd}</span>
             					`;
+            let sys4mTable = [];
+	        document.querySelectorAll('#customfield_16213-val li').forEach((sys)=>{
+	        	sys4mTable.push(sys.textContent);
+	        });
             let targetElement = ref.querySelector('div.link-content > p > span > span');
             if (targetElement) {
 				targetElement.parentNode.insertBefore(newElem, targetElement.nextSibling);
 				
 				let elem = ref.querySelector('div.link-content > p > span > span > .sys-pill');
 				elem.addEventListener('click', this.getSystemDetails);
+				
+				if(sys4mTable.indexOf(elem.textContent) < 0){
+					elem.classList.add('error');
+				}
 	        }
         }
+        
+        this.checkCOMaxMin();
+        this.formatSystems();
     },
     getCOdetails: async function (CO) {
         try {
@@ -75,7 +105,7 @@ var util = {
             returnObj['cot'] = obj.key;
             returnObj['crq'] = obj.fields.summary;
             returnObj['status'] = obj.fields.status.name;
-            returnObj['sys'] = obj.fields.customfield_13104.value;
+            returnObj['sys'] = obj.fields.customfield_13104.value.toUpperCase();
             returnObj['summary'] = obj.fields.customfield_24201;
             returnObj['version'] = (obj.fields.customfield_24500) ? obj.fields.customfield_24500 : '';
             returnObj['created'] = this.formatDate(obj.fields.created);
@@ -90,6 +120,31 @@ var util = {
     getSystemDetails: function() {
     	let sys = this.textContent || event.target.textContent;
     	console.log('Ticket-power:v1 getSystemDetails', sys.toUpperCase());
+    },
+    checkCOMaxMin: function() {
+    	//Get CO - Max-Min dates
+        let elems = document.querySelectorAll('.co-dates');
+        // console.log('Ticket-power:v1 checkCOMaxMin', elems);
+        let coDateArr = [];
+        for(let i of elems) {
+         	let dt = i.textContent.split(' → ');
+        	coDateArr = coDateArr.concat(dt);
+        }
+
+        let dtStart = new Date(this.formatDate(document.querySelector('#customfield_15231-val > span:nth-child(1) > time').dateTime));
+        let dtEnd = new Date(this.formatDate(document.querySelector('#customfield_15233-val > span:nth-child(1) > time').dateTime));
+        
+        coDateArr = coDateArr.map(i => new Date(i));
+        coDateArr = coDateArr.sort((a,b) => a.getTime() - b.getTime());
+        let dtMin = coDateArr[0];
+        let dtMax = coDateArr[coDateArr.length - 1];
+        
+        if(dtStart.toString() != dtMin.toString()) {
+        	document.querySelector('#customfield_15231-val').classList.add('error');
+        }
+        if(dtEnd.toString() != dtMax.toString()) {
+        	document.querySelector('#customfield_15233-val').classList.add('error');
+        }
     },
     formatDate: function (dt) {
     	let date = new Date(dt);
@@ -127,3 +182,6 @@ var util = {
 };
 
 util.init();
+
+//document.querySelector('#customfield_15231-val').classList.remove('error'); document.querySelector('#customfield_15233-val').classList.remove('error');
+//util.checkCOMaxMin();
