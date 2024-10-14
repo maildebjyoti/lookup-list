@@ -1,0 +1,88 @@
+.issue-view > .issue-container .issue-header {
+	// background: #f5f5f5 !important;
+}
+
+#customfieldmodule #customfield-tabs .tabs-menu {
+	border-bottom: 1px solid #ccc;
+}
+.aui-tabs.horizontal-tabs > .tabs-menu:before {
+	display: none;
+}
+
+/* Tabs */
+.menu-item > a:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+li.menu-item {
+	background-color: #eee;
+	min-width: 150px;
+	text-align: center;
+	border: solid 5px #fff;
+	border-bottom: none;
+	border-top: none;
+	border-radius: 10px 10px 0px 0;
+}
+
+li.menu-item.active-tab {
+	background: #f2c12e;
+}
+
+.menu-item.active-tab > a {
+	color: #000 !important;
+}
+
+.temp-class {
+	background: #a5f5f5;
+	min-height: 20px;
+}
+
+a.issue-link.link-title {
+	min-width: 80px;
+	display: inline-block;
+}
+.co-details {
+	position: absolute;
+	left: 250px;
+	width: 120vh;
+}
+
+.sys-pill {
+	display: inline-block;
+	background-color: #dafffb;
+	color: #04364a;
+	margin: 2px;
+	padding: 2px 5px;
+	cursor: pointer;
+	border-radius: 5px;
+	font-size: 12px;
+	font-weight: 500;
+	border: 1px solid #04364a;
+	min-width: 80px;
+	text-align: center;
+}
+.co-version {
+	display: inline-block;
+	background-color: #e8f9f8;
+	min-width: 60px;
+	font-style: italic;
+	font-weight: bold;
+	font-size: small;
+	text-overflow: clip;
+}
+.co-summary {
+	display: inline-block;
+	min-width: 80vh;
+}
+.co-dates {
+	display: inline-block;
+	position: absolute;
+	right: 0;
+	padding: 0 5px;
+	border-radius: 3px;
+}
+.error {
+	background-color: #fce8e8 !important;
+	color: #8e1111;
+}
