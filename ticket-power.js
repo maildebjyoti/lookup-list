@@ -141,11 +141,15 @@ var util = {
         let dtMin = coDateArr[0];
         let dtMax = coDateArr[coDateArr.length - 1];
         
-        if(dtStart.toString() != dtMin.toString()) {
+        if (dtStart.toString() != dtMin.toString()) {
         	document.querySelector('#customfield_15231-val').classList.add('error');
+        } else {
+        	document.querySelector('#customfield_15231-val').classList.remove('error');
         }
-        if(dtEnd.toString() != dtMax.toString()) {
+        if (dtEnd.toString() != dtMax.toString()) {
         	document.querySelector('#customfield_15233-val').classList.add('error');
+        } else {
+        	document.querySelector('#customfield_15233-val').classList.remove('error');
         }
     },
     formatDate: function (dt) {
