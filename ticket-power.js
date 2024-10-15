@@ -12,7 +12,8 @@ var util = {
     },
     init: function () {
         console.log('Ticket-power:v1 init');
-        
+        window.onresize = util.handleWindowResize;
+
         this.formatCOs();
     },
     formatSystems: function formatSystems() {
@@ -92,6 +93,7 @@ var util = {
         
         this.checkCOMaxMin();
         this.formatSystems();
+        this.handleWindowResize();
     },
     getCOdetails: async function (CO) {
         try {
@@ -157,6 +159,35 @@ var util = {
 	    } else {
 	    	return '';
 	    }
+	},
+	handleWindowResize: function() {
+		let refElem = document.querySelector('#linkingmodule > div.mod-content > div > dl:nth-child(1)');
+		let targetWidth = refElem.offsetWidth;
+		console.log(`Height: ${window.innerHeight} & Width: ${window.innerWidth} --> ${targetWidth}px`);
+		
+		if (window.innerWidth <= 1500) {
+			document.querySelectorAll('.links-list:nth-child(1) .link-content').forEach((e) => {
+				e.style.height = '60px';
+			});
+			document.querySelectorAll(".co-details").forEach((e) => {
+			    e.style.left = '110px';
+			    e.style.top = '27px';
+			});
+			document.querySelectorAll(".co-summary").forEach((e) => {
+			    e.style.width = (targetWidth - 200) + 'px';
+			});
+		} else {
+			document.querySelectorAll('.links-list:nth-child(1) .link-content').forEach((e) => {
+				e.style.height = '30px';
+			});
+			document.querySelectorAll(".co-details").forEach((e) => {
+			    e.style.left = '250px';
+			    e.style.top = '1px';
+			});
+			document.querySelectorAll(".co-summary").forEach((e) => {
+			    e.style.width = (targetWidth - 400) + 'px';
+			});
+		}
 	},
     test: function (url) {
         try {
